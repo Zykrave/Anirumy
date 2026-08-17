@@ -15,6 +15,7 @@ import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.style.TextAlign
 import com.zykrave.anirumy.core.ui.common.BottomDestination
+import com.zykrave.anirumy.core.ui.common.BottomDestination.Companion.testTag
 import com.zykrave.anirumy.core.ui.common.LocalNavActionManager
 import com.zykrave.anirumy.core.ui.common.navigation.Route
 

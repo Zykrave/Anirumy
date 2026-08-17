@@ -18,7 +18,6 @@ import com.zykrave.anirumy.core.domain.repository.ThreadRepository
 import com.zykrave.anirumy.core.domain.repository.UserRepository
 import org.koin.dsl.module
 import org.koin.plugin.module.dsl.single
-import org.koin.plugin.module.dsl.single
 
 val repositoryModule = module {
     single<ActivityRepository>()
