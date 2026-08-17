@@ -1,0 +1,19 @@
+package com.zykrave.anirumy.feature.activitydetails
+
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import com.zykrave.anirumy.core.base.state.UiState
+import com.zykrave.anirumy.core.model.activity.GenericActivity
+
+@Stable
+data class ActivityDetailsUiState(
+    val details: GenericActivity? = null,
+    val replies: SnapshotStateList<GenericActivity> = mutableStateListOf(),
+    val fetchFromNetwork: Boolean = false,
+    override val isLoading: Boolean = true,
+    override val error: String? = null,
+) : UiState() {
+    override fun setLoading(value: Boolean) = copy(isLoading = value)
+    override fun setError(value: String?) = copy(error = value)
+}

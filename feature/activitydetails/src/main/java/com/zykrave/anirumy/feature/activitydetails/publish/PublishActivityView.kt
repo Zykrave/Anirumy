@@ -1,0 +1,85 @@
+package com.zykrave.anirumy.feature.activitydetails.publish
+
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation3.runtime.result.LocalResultEventBus
+import com.zykrave.anirumy.core.ui.common.LocalNavActionManager
+import com.zykrave.anirumy.core.ui.common.navigation.Route.PublishActivity
+import com.zykrave.anirumy.core.ui.composables.common.ErrorDialogHandler
+import com.zykrave.anirumy.core.ui.composables.markdown.PublishMarkdownView
+import com.zykrave.anirumy.core.ui.theme.AniHyouTheme
+import org.koin.compose.viewmodel.koinViewModel
+
+@Composable
+fun PublishActivityView(
+    arguments: PublishActivity,
+) {
+    val viewModel: PublishActivityViewModel = koinViewModel()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    PublishActivityContent(
+        arguments = arguments,
+        uiState = uiState,
+        event = viewModel,
+    )
+}
+
+@Composable
+private fun PublishActivityContent(
+    arguments: PublishActivity,
+    uiState: PublishActivityUiState,
+    event: PublishActivityEvent?,
+) {
+    val navActionManager = LocalNavActionManager.current
+    val eventBus = LocalResultEventBus.current
+    ErrorDialogHandler(uiState, onDismiss = { event?.onErrorDisplayed() })
+
+    LaunchedEffect(uiState.activity) {
+        if (uiState.activity != null) {
+            eventBus.sendResult(uiState.activity)
+            navActionManager.goBack()
+        }
+    }
+
+    LaunchedEffect(uiState.reply) {
+        if (uiState.reply != null) {
+            eventBus.sendResult(uiState.reply)
+            navActionManager.goBack()
+        }
+    }
+
+    PublishMarkdownView(
+        onPublish = { finalText ->
+            if (arguments.activityId != null) {
+                event?.publishActivityReply(arguments.activityId!!, arguments.id, finalText)
+            } else {
+                event?.publishActivity(arguments.id, finalText)
+            }
+        },
+        isLoading = uiState.isLoading,
+        initialText = arguments.text,
+        navigateBack = navActionManager::goBack
+    )
+}
+
+@Preview
+@Composable
+private fun PublishActivityViewPreview() {
+    AniHyouTheme {
+        Surface {
+            PublishActivityContent(
+                arguments = PublishActivity(
+                    activityId = null,
+                    id = 1,
+                    text = "This is a preview"
+                ),
+                uiState = PublishActivityUiState(),
+                event = null,
+            )
+        }
+    }
+}

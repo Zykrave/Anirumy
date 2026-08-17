@@ -1,0 +1,207 @@
+package com.zykrave.anirumy.feature.home.current.fulllist
+
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Surface
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.zykrave.anirumy.core.model.CurrentListType
+import com.zykrave.anirumy.core.model.media.exampleCommonMediaListEntry
+import com.zykrave.anirumy.core.ui.common.LocalNavActionManager
+import com.zykrave.anirumy.core.ui.common.rememberSnackbarManager
+import com.zykrave.anirumy.core.ui.composables.DefaultScaffoldWithMediumTopAppBar
+import com.zykrave.anirumy.core.ui.composables.common.BackIconButton
+import com.zykrave.anirumy.core.ui.theme.AniHyouTheme
+import com.zykrave.anirumy.feature.editmedia.EditMediaSheet
+import com.zykrave.anirumy.feature.editmedia.composables.SetScoreDialog
+import com.zykrave.anirumy.feature.home.current.CurrentEvent
+import com.zykrave.anirumy.feature.home.current.CurrentUiState
+import com.zykrave.anirumy.feature.home.current.CurrentViewModel
+import com.zykrave.anirumy.feature.home.current.composables.CurrentListItem
+import com.zykrave.anirumy.feature.home.current.composables.CurrentListItemPlaceholder
+import org.koin.compose.viewmodel.koinViewModel
+
+@Composable
+fun CurrentFullListView(
+    isLoggedIn: Boolean,
+    listType: CurrentListType,
+    modifier: Modifier = Modifier
+) {
+    val viewModel: CurrentViewModel = koinViewModel()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    CurrentFullListContent(
+        isLoggedIn = isLoggedIn,
+        listType = listType,
+        uiState = uiState,
+        event = viewModel,
+        modifier = modifier
+    )
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
+@Composable
+private fun CurrentFullListContent(
+    isLoggedIn: Boolean,
+    listType: CurrentListType,
+    uiState: CurrentUiState,
+    event: CurrentEvent?,
+    modifier: Modifier = Modifier
+) {
+    val navActionManager = LocalNavActionManager.current
+    val haptic = LocalHapticFeedback.current
+    val pullRefreshState = rememberPullToRefreshState()
+    val snackbarManager = rememberSnackbarManager()
+    val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+        rememberTopAppBarState()
+    )
+    val bottomBarPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+
+    var showEditSheet by rememberSaveable { mutableStateOf(false) }
+
+    val items = remember(listType) {
+        uiState.getListFromType(listType)
+    }
+
+    if (showEditSheet && uiState.selectedItem?.media != null && uiState.selectedType != null) {
+        EditMediaSheet(
+            mediaDetails = uiState.selectedItem.media!!.basicMediaDetails,
+            listEntry = uiState.selectedItem.basicMediaListEntry,
+            bottomPadding = bottomBarPadding,
+            onEntryUpdated = {
+                event?.onUpdateListEntry(it, uiState.selectedType)
+            },
+            onDismissed = { showEditSheet = false }
+        )
+    }
+
+    if (uiState.openSetScoreDialog) {
+        SetScoreDialog(
+            onDismiss = { event?.toggleSetScoreDialog(false) },
+            onConfirm = { event?.setScore(it) },
+        )
+    }
+
+    DefaultScaffoldWithMediumTopAppBar(
+        title = listType.localized(),
+        modifier = modifier,
+        navigationIcon = {
+            BackIconButton(onClick = navActionManager::goBack)
+        },
+        scrollBehavior = topAppBarScrollBehavior,
+        snackbarHost = snackbarManager::SnackbarHost,
+        contentWindowInsets = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)
+    ) { padding ->
+        PullToRefreshBox(
+            isRefreshing = uiState.fetchFromNetwork,
+            onRefresh = { event?.refresh() },
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
+            state = pullRefreshState,
+            indicator = {
+                PullToRefreshDefaults.LoadingIndicator(
+                    state = pullRefreshState,
+                    isRefreshing = uiState.fetchFromNetwork,
+                    modifier = Modifier.align(Alignment.TopCenter),
+                )
+            }
+        ) {
+            LazyColumn(
+                modifier = Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+                contentPadding = PaddingValues(bottom = bottomBarPadding),
+            ) {
+                items(
+                    items = items,
+                    contentType = { it }
+                ) { item ->
+                    CurrentListItem(
+                        modifier = Modifier.fillMaxWidth(),
+                        item = item,
+                        isPlusEnabled = !uiState.isLoadingPlusOne,
+                        onClick = { navActionManager.toMediaDetails(item.mediaId) },
+                        onClickPlus = { increment ->
+                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                            event?.onClickPlusOne(increment, item, listType)
+                        },
+                        onLongClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            if (isLoggedIn) {
+                                event?.selectItem(item, listType)
+                                showEditSheet = true
+                            } else {
+                                snackbarManager.showNotLoggedInSnackbar()
+                            }
+                        },
+                        blockPlus = { event?.blockPlusOne() }
+                    )
+                }
+                if (items.isEmpty() && uiState.isLoading) {
+                    items(4) {
+                        CurrentListItemPlaceholder()
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun CurrentFullListViewPreview() {
+    val exampleList = remember {
+        mutableStateListOf(
+            exampleCommonMediaListEntry,
+            exampleCommonMediaListEntry,
+            exampleCommonMediaListEntry,
+            exampleCommonMediaListEntry,
+            exampleCommonMediaListEntry,
+            exampleCommonMediaListEntry,
+            exampleCommonMediaListEntry,
+        )
+    }
+    AniHyouTheme {
+        Surface {
+            CurrentFullListContent(
+                isLoggedIn = true,
+                listType = CurrentListType.AIRING,
+                uiState = CurrentUiState(
+                    airingList = exampleList,
+                    behindList = exampleList,
+                    animeList = exampleList,
+                    mangaList = exampleList
+                ),
+                event = null,
+            )
+        }
+    }
+}

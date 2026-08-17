@@ -1,5 +1,5 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-val appPackageName by extra { "com.axiel7.anihyou" }
+val appPackageName by extra { "com.zykrave.anirumy" }
 
 plugins {
     alias(libs.plugins.android.application) apply false

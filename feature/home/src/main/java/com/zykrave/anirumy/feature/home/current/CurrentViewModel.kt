@@ -1,0 +1,330 @@
+package com.zykrave.anirumy.feature.home.current
+
+import androidx.lifecycle.viewModelScope
+import com.zykrave.anirumy.core.base.DataResult
+import com.zykrave.anirumy.core.base.PagedResult
+import com.zykrave.anirumy.core.base.extensions.indexOfFirstOrNull
+import com.zykrave.anirumy.core.common.utils.NumberUtils.isNullOrZero
+import com.zykrave.anirumy.core.common.viewmodel.UiStateViewModel
+import com.zykrave.anirumy.core.domain.repository.DefaultPreferencesRepository
+import com.zykrave.anirumy.core.domain.repository.MediaListRepository
+import com.zykrave.anirumy.core.model.CurrentListType
+import com.zykrave.anirumy.core.model.media.currentAnimeSeason
+import com.zykrave.anirumy.core.model.media.duration
+import com.zykrave.anirumy.core.model.media.episodesBehind
+import com.zykrave.anirumy.core.model.media.isBehind
+import com.zykrave.anirumy.core.model.media.nextAnimeSeason
+import com.zykrave.anirumy.core.network.fragment.BasicMediaListEntry
+import com.zykrave.anirumy.core.network.fragment.CommonMediaListEntry
+import com.zykrave.anirumy.core.network.type.MediaListSort
+import com.zykrave.anirumy.core.network.type.MediaListStatus
+import com.zykrave.anirumy.core.network.type.MediaStatus
+import com.zykrave.anirumy.core.network.type.MediaType
+import com.zykrave.anirumy.core.network.type.ScoreFormat
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+
+@OptIn(ExperimentalCoroutinesApi::class)
+class CurrentViewModel(
+    private val mediaListRepository: MediaListRepository,
+    defaultPreferencesRepository: DefaultPreferencesRepository,
+) : UiStateViewModel<CurrentUiState>(), CurrentEvent {
+
+    override val initialState = CurrentUiState()
+
+    private val myUserId = defaultPreferencesRepository.userId.filterNotNull()
+
+    override fun refresh() {
+        mutableUiState.update { it.copy(fetchFromNetwork = true) }
+    }
+
+    override fun onClickPlusOne(
+        increment: Int,
+        item: CommonMediaListEntry,
+        type: CurrentListType
+    ) {
+        viewModelScope.launch {
+            mutableUiState.update {
+                it.copy(
+                    selectedItem = item,
+                    selectedType = type,
+                    isLoadingPlusOne = true
+                )
+            }
+            mediaListRepository.incrementProgress(
+                entry = item.basicMediaListEntry,
+                increment = increment,
+                total = item.duration()
+            ).collectLatest { result ->
+                mutableUiState.update {
+                    if (result is DataResult.Success && result.data != null) {
+                        onUpdateListEntry(result.data!!.basicMediaListEntry, type)
+                    }
+                    result.toUiState().copy(isLoadingPlusOne = result is DataResult.Loading)
+                }
+            }
+        }
+    }
+
+    override fun blockPlusOne() {
+        mutableUiState.update { it.copy(isLoadingPlusOne = true) }
+    }
+
+    override fun onUpdateListEntry(
+        newListEntry: BasicMediaListEntry?,
+        type: CurrentListType
+    ) {
+        mutableUiState.value.run {
+            selectedItem?.let { selectedItem ->
+                if (selectedItem.basicMediaListEntry != newListEntry) {
+                    val list = getListFromType(type)
+                    if (newListEntry != null) {
+                        list.indexOfFirstOrNull { it.mediaId == selectedItem.mediaId }
+                            ?.let { index ->
+                                val oldValue = list[index]
+                                if (newListEntry.status != oldValue.basicMediaListEntry.status) {
+                                    list.removeAt(index)
+                                    if (newListEntry.status == MediaListStatus.COMPLETED
+                                        && newListEntry.score.isNullOrZero()
+                                    ) {
+                                        toggleSetScoreDialog(true)
+                                    }
+                                } else {
+                                    list[index] = oldValue.copy(basicMediaListEntry = newListEntry)
+                                }
+                                if (type == CurrentListType.BEHIND
+                                    && !newListEntry.isBehind(oldValue.media?.nextAiringEpisode?.episode ?: 0)
+                                ) {
+                                    airingList.add(list[index])
+                                    list.removeAt(index)
+                                }
+                            }
+                    } else {
+                        list.remove(selectedItem)
+                    }
+                }
+            }
+        }
+    }
+
+    override fun selectItem(item: CommonMediaListEntry, type: CurrentListType) {
+        mutableUiState.update { it.copy(selectedItem = item, selectedType = type) }
+    }
+
+    override fun toggleSetScoreDialog(open: Boolean) {
+        mutableUiState.update { it.copy(openSetScoreDialog = open) }
+    }
+
+    override fun setScore(score: Double?) {
+        viewModelScope.launch {
+            mutableUiState.value.selectedItem?.let { item ->
+                mediaListRepository.updateEntry(
+                    oldEntry = item.basicMediaListEntry,
+                    mediaId = item.mediaId,
+                    score = score,
+                ).collectLatest {
+                    if (it is DataResult.Success) toggleSetScoreDialog(false)
+                }
+            }
+        }
+    }
+
+    private fun findEntryAndListType(entry: BasicMediaListEntry): Pair<CommonMediaListEntry, CurrentListType>? {
+        val predicate: (CommonMediaListEntry) -> Boolean = { it.mediaId == entry.mediaId }
+        mutableUiState.value.run {
+            return airingList.find(predicate)?.let { it to CurrentListType.AIRING }
+                ?: behindList.find(predicate)?.let { it to CurrentListType.BEHIND }
+                ?: animeList.find(predicate)?.let { it to CurrentListType.ANIME }
+                ?: mangaList.find(predicate)?.let { it to CurrentListType.MANGA }
+                ?: nextSeasonAnimeList.find(predicate)?.let { it to CurrentListType.NEXT_SEASON }
+        }
+    }
+
+    init {
+        // anime
+        mutableUiState
+            .distinctUntilChanged { _, new ->
+                !new.fetchFromNetwork
+            }
+            .flatMapLatest { uiState ->
+                mediaListRepository.getUserMediaList(
+                    userId = myUserId.first(),
+                    mediaType = MediaType.ANIME,
+                    statusIn = listOf(MediaListStatus.CURRENT, MediaListStatus.REPEATING),
+                    sort = listOf(MediaListSort.UPDATED_TIME_DESC),
+                    scoreFormat = defaultPreferencesRepository.scoreFormat.first() ?: ScoreFormat.POINT_10_DECIMAL,
+                    fetchFromNetwork = uiState.fetchFromNetwork,
+                    page = null,
+                    perPage = null,
+                )
+            }
+            .onEach { result ->
+                mutableUiState.update { uiState ->
+                    when (result) {
+                        is PagedResult.Success -> {
+                            val airingList = result.list
+                                .filter {
+                                    it.media?.status == MediaStatus.RELEASING && !it.isBehind()
+                                }
+                                .sortedWith(
+                                    compareBy(nullsLast()) { it.media?.nextAiringEpisode?.timeUntilAiring }
+                                )
+                            val behindList = result.list
+                                .filter {
+                                    it.media?.status == MediaStatus.RELEASING && it.isBehind()
+                                }
+                                .sortedBy { it.episodesBehind() }
+                            val animeList = result.list
+                                .filter { it.media?.status != MediaStatus.RELEASING }
+                            uiState.airingList.clear()
+                            uiState.airingList.addAll(airingList)
+                            uiState.behindList.clear()
+                            uiState.behindList.addAll(behindList)
+                            uiState.animeList.clear()
+                            uiState.animeList.addAll(animeList)
+                            uiState.copy(
+                                isLoading = false
+                            )
+                        }
+
+                        is PagedResult.Loading -> {
+                            uiState.copy(isLoading = true)
+                        }
+
+                        is PagedResult.Error -> {
+                            uiState.copy(
+                                error = result.message,
+                                isLoading = false,
+                            )
+                        }
+                    }
+                }
+            }
+            .launchIn(viewModelScope)
+
+        // manga
+        mutableUiState
+            .distinctUntilChanged { _, new ->
+                !new.fetchFromNetwork
+            }
+            .flatMapLatest { uiState ->
+                mediaListRepository.getUserMediaList(
+                    userId = myUserId.first(),
+                    mediaType = MediaType.MANGA,
+                    statusIn = listOf(MediaListStatus.CURRENT, MediaListStatus.REPEATING),
+                    sort = listOf(MediaListSort.UPDATED_TIME_DESC),
+                    scoreFormat = defaultPreferencesRepository.scoreFormat.first() ?: ScoreFormat.POINT_10_DECIMAL,
+                    fetchFromNetwork = uiState.fetchFromNetwork,
+                    page = 1
+                )
+            }
+            .onEach { result ->
+                mutableUiState.update { uiState ->
+                    when (result) {
+                        is PagedResult.Success -> {
+                            uiState.mangaList.clear()
+                            uiState.mangaList.addAll(result.list)
+                            uiState.copy(
+                                fetchFromNetwork = false,
+                                isLoading = false
+                            )
+                        }
+
+                        is PagedResult.Loading -> {
+                            uiState.copy(isLoading = true)
+                        }
+
+                        is PagedResult.Error -> {
+                            uiState.copy(
+                                error = result.message,
+                                isLoading = false,
+                            )
+                        }
+                    }
+                }
+            }
+            .launchIn(viewModelScope)
+
+        // next season on list
+        mutableUiState
+            .distinctUntilChanged { _, new ->
+                !new.fetchFromNetwork
+            }
+            .flatMapLatest { uiState ->
+                val now = LocalDateTime.now()
+                mediaListRepository.getMySeasonalAnime(
+                    season = now.currentAnimeSeason(),
+                    fetchFromNetwork = uiState.fetchFromNetwork,
+                    page = 1,
+                ).combine(
+                    mediaListRepository.getMySeasonalAnime(
+                        season = now.nextAnimeSeason(),
+                        fetchFromNetwork = uiState.fetchFromNetwork,
+                        page = 1,
+                    )
+                ) { first, second ->
+                    when (first) {
+                        is PagedResult.Success if second is PagedResult.Success -> {
+                            PagedResult.Success(
+                                list = first.list + second.list,
+                                currentPage = first.currentPage,
+                                hasNextPage = first.hasNextPage,
+                            )
+                        }
+
+                        !is PagedResult.Success -> first
+                        else -> second
+                    }
+                }
+            }
+            .onEach { result ->
+                mutableUiState.update { uiState ->
+                    when (result) {
+                        is PagedResult.Success -> {
+                            uiState.nextSeasonAnimeList.clear()
+                            uiState.nextSeasonAnimeList.addAll(result.list)
+                            uiState.copy(
+                                fetchFromNetwork = false,
+                                isLoading = false
+                            )
+                        }
+
+                        is PagedResult.Loading -> {
+                            uiState.copy(isLoading = true)
+                        }
+
+                        is PagedResult.Error -> {
+                            uiState.copy(
+                                error = result.message,
+                                isLoading = false,
+                            )
+                        }
+                    }
+                }
+            }
+            .launchIn(viewModelScope)
+
+        mediaListRepository
+            .lastUpdatedEntry
+            .filterNotNull()
+            .onEach { entry ->
+                findEntryAndListType(entry)?.let {
+                    val mediaEntry = it.first
+                    val listType = it.second
+                    selectItem(mediaEntry, listType)
+                    onUpdateListEntry(entry, listType)
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+}

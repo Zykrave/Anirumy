@@ -5,8 +5,8 @@ plugins {
 gradlePlugin {
     plugins {
         register("androidFeature") {
-            id = "anihyou.android.feature"
-            implementationClass = "com.axiel7.anihyou.buildlogic.AndroidFeatureConventionPlugin"
+            id = "anirumy.android.feature"
+            implementationClass = "com.zykrave.anirumy.buildlogic.AndroidFeatureConventionPlugin"
         }
     }
 }

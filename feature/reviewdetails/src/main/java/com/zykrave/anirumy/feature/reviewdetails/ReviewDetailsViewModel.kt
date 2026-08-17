@@ -1,0 +1,63 @@
+package com.zykrave.anirumy.feature.reviewdetails
+
+import androidx.lifecycle.viewModelScope
+import com.zykrave.anirumy.core.base.DataResult
+import com.zykrave.anirumy.core.domain.repository.ReviewRepository
+import com.zykrave.anirumy.core.network.type.ReviewRating
+import com.zykrave.anirumy.core.ui.common.navigation.Route
+import com.zykrave.anirumy.core.common.viewmodel.UiStateViewModel
+import com.zykrave.anirumy.core.domain.repository.DefaultPreferencesRepository
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
+import org.koin.core.annotation.InjectedParam
+
+class ReviewDetailsViewModel(
+    @InjectedParam private val arguments: Route.ReviewDetails,
+    defaultPreferencesRepository: DefaultPreferencesRepository,
+    private val reviewRepository: ReviewRepository
+) : UiStateViewModel<ReviewDetailsUiState>(), ReviewDetailsEvent {
+
+    override val initialState = ReviewDetailsUiState()
+
+    override fun rateReview(rating: ReviewRating) {
+        reviewRepository.rateReview(arguments.id, rating)
+            .onEach { result ->
+                if (result is DataResult.Success && result.data != null) {
+                    mutableUiState.update {
+                        it.copy(
+                            details = it.details?.copy(
+                                userRating = result.data?.userRating,
+                                rating = result.data?.rating,
+                                ratingAmount = result.data?.ratingAmount,
+                            )
+                        )
+                    }
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    init {
+        reviewRepository.getReviewDetails(arguments.id)
+            .onEach { result ->
+                mutableUiState.update {
+                    if (result is DataResult.Success) {
+                        it.copy(
+                            isLoading = false,
+                            details = result.data
+                        )
+                    } else {
+                        result.toUiState()
+                    }
+                }
+            }
+            .launchIn(viewModelScope)
+
+        defaultPreferencesRepository.translatorApp
+            .onEach { value ->
+                mutableUiState.update { it.copy(translatorApp = value) }
+            }
+            .launchIn(viewModelScope)
+    }
+}

@@ -1,0 +1,105 @@
+package com.zykrave.anirumy.feature.mediadetails.composables
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.zykrave.anirumy.core.model.media.icon
+import com.zykrave.anirumy.core.model.media.localized
+import com.zykrave.anirumy.core.network.type.MediaListStatus
+import com.zykrave.anirumy.core.network.type.MediaType
+import com.zykrave.anirumy.core.network.type.ScoreFormat
+import com.zykrave.anirumy.core.ui.composables.person.PERSON_IMAGE_SIZE_VERY_SMALL
+import com.zykrave.anirumy.core.ui.composables.person.PersonImage
+import com.zykrave.anirumy.core.ui.composables.scores.MinimalScoreIndicator
+import com.zykrave.anirumy.core.ui.theme.AniHyouTheme
+
+@Composable
+fun FollowingUserItem(
+    mediaType: MediaType,
+    avatarUrl: String?,
+    username: String,
+    status: MediaListStatus,
+    score: Double?,
+    scoreFormat: ScoreFormat?,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp, horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        PersonImage(
+            url = avatarUrl,
+            modifier = Modifier
+                .size(PERSON_IMAGE_SIZE_VERY_SMALL.dp)
+        )
+        Text(
+            text = username,
+            modifier = Modifier
+                .padding(start = 8.dp)
+                .weight(1f)
+        )
+        Row(
+            modifier = Modifier.weight(1f),
+            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(id = status.icon()),
+                contentDescription = status.localized(mediaType),
+            )
+            if (score != null && scoreFormat != null) {
+                MinimalScoreIndicator(
+                    score = score,
+                    scoreFormat = scoreFormat,
+                    modifier = Modifier.fillMaxWidth(),
+                    showTotal = true,
+                )
+            } else {
+                Spacer(modifier = Modifier.width(68.dp))
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun FollowingUserItemPreview() {
+    AniHyouTheme {
+        Surface {
+            Column {
+                FollowingUserItem(
+                    mediaType = MediaType.ANIME,
+                    avatarUrl = null,
+                    username = "axiel7",
+                    status = MediaListStatus.CURRENT,
+                    score = 100.0,
+                    scoreFormat = ScoreFormat.POINT_100,
+                )
+                FollowingUserItem(
+                    mediaType = MediaType.MANGA,
+                    avatarUrl = null,
+                    username = "axiel7",
+                    status = MediaListStatus.CURRENT,
+                    score = 3.0,
+                    scoreFormat = ScoreFormat.POINT_3,
+                )
+            }
+        }
+    }
+}

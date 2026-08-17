@@ -1,0 +1,218 @@
+package com.zykrave.anirumy.core.domain.repository
+
+import com.apollographql.cache.normalized.FetchPolicy
+import com.apollographql.cache.normalized.fetchPolicy
+import com.zykrave.anirumy.core.base.DataResult
+import com.zykrave.anirumy.core.common.utils.NumberUtils.isGreaterThanZero
+import com.zykrave.anirumy.core.model.media.AnimeSeason
+import com.zykrave.anirumy.core.model.media.advancedScoresMap
+import com.zykrave.anirumy.core.model.media.isUsingVolumeProgress
+import com.zykrave.anirumy.core.model.media.progressOrVolumes
+import com.zykrave.anirumy.core.network.UpdateEntryMutation
+import com.zykrave.anirumy.core.network.api.MediaListApi
+import com.zykrave.anirumy.core.network.api.model.isNull
+import com.zykrave.anirumy.core.network.api.model.toFuzzyDate
+import com.zykrave.anirumy.core.network.api.model.toFuzzyDateInput
+import com.zykrave.anirumy.core.network.fragment.BasicMediaListEntry
+import com.zykrave.anirumy.core.network.fragment.CommonPage
+import com.zykrave.anirumy.core.network.fragment.FuzzyDate
+import com.zykrave.anirumy.core.network.type.MediaListSort
+import com.zykrave.anirumy.core.network.type.MediaListStatus
+import com.zykrave.anirumy.core.network.type.MediaSort
+import com.zykrave.anirumy.core.network.type.MediaType
+import com.zykrave.anirumy.core.network.type.ScoreFormat
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onEach
+import java.time.LocalDate
+
+class MediaListRepository (
+    private val api: MediaListApi,
+    defaultPreferencesRepository: DefaultPreferencesRepository,
+) : BaseNetworkRepository(defaultPreferencesRepository) {
+
+    private val _lastUpdatedEntry = MutableStateFlow<BasicMediaListEntry?>(null)
+    val lastUpdatedEntry = _lastUpdatedEntry.asStateFlow()
+
+    fun getMediaListCollection(
+        userId: Int,
+        mediaType: MediaType,
+        sort: List<MediaListSort>,
+        fetchFromNetwork: Boolean = false,
+        chunk: Int?,
+        perChunk: Int?,
+    ) = api
+        .mediaListCollection(userId, mediaType, sort, fetchFromNetwork, chunk, perChunk)
+        .toFlow()
+        .asPagedResult(page = { CommonPage("", chunk, it.MediaListCollection?.hasNextChunk) }) {
+            it.MediaListCollection?.lists.orEmpty()
+        }
+
+    fun getUserMediaList(
+        userId: Int,
+        mediaType: MediaType,
+        statusIn: List<MediaListStatus>?,
+        sort: List<MediaListSort>,
+        scoreFormat: ScoreFormat,
+        fetchFromNetwork: Boolean = false,
+        page: Int?,
+        perPage: Int? = 25,
+    ) = api
+        .userMediaList(userId, mediaType, statusIn, sort, scoreFormat, fetchFromNetwork, page, perPage)
+        .toFlow()
+        .asPagedResult(page = { it.Page?.pageInfo?.commonPage }) { data ->
+            data.Page?.mediaList?.mapNotNull {
+                // this is needed because of a bug in the AniList API
+                // that sometimes returns the score in another format if we don't explicit send it
+                it?.commonMediaListEntry?.copy(
+                    basicMediaListEntry = it.commonMediaListEntry.basicMediaListEntry.copy(
+                        score = it.scoreFixed
+                    )
+                )
+            }.orEmpty()
+        }
+
+    fun getMySeasonalAnime(
+        season: AnimeSeason,
+        sort: List<MediaSort> = listOf(MediaSort.POPULARITY_DESC),
+        fetchFromNetwork: Boolean = false,
+        page: Int,
+        perPage: Int = 25,
+    ) = api
+        .mySeasonalAnimeQuery(season.season, season.year, sort, fetchFromNetwork, page, perPage)
+        .toFlow()
+        .asPagedResult(page = { it.Page?.pageInfo?.commonPage }) { data ->
+            data.Page?.media?.mapNotNull { media ->
+                media?.mediaListEntry?.commonMediaListEntry
+                    ?.takeIf { it.basicMediaListEntry.status == MediaListStatus.PLANNING }
+            }.orEmpty()
+        }
+
+    fun incrementProgress(
+        entry: BasicMediaListEntry,
+        increment: Int = 1,
+        total: Int?
+    ): Flow<DataResult<UpdateEntryMutation.SaveMediaListEntry?>> {
+        val newProgress = (entry.progressOrVolumes() ?: 0) + increment
+        val totalDuration = total.takeIf { it != 0 }
+        val isMaxProgress = totalDuration != null && newProgress >= totalDuration
+        val isPlanning = entry.status == MediaListStatus.PLANNING
+        val isRepeating = entry.status == MediaListStatus.REPEATING
+
+        val newStatus = when {
+            isMaxProgress -> MediaListStatus.COMPLETED
+            isPlanning -> MediaListStatus.CURRENT
+            else -> null
+        }
+        return updateEntry(
+            oldEntry = entry,
+            mediaId = entry.mediaId,
+            progress = newProgress.takeIf { !entry.isUsingVolumeProgress() },
+            progressVolumes = newProgress.takeIf { entry.isUsingVolumeProgress() },
+            status = newStatus,
+            startedAt = LocalDate.now().takeIf {
+                (!isRepeating || entry.startedAt?.fuzzyDate?.isNull() != false) &&
+                (isPlanning || !entry.progress.isGreaterThanZero())
+            }?.toFuzzyDate() ?: entry.startedAt?.fuzzyDate,
+            completedAt = LocalDate.now().takeIf {
+                (!isRepeating || entry.completedAt?.fuzzyDate?.isNull() != false) && isMaxProgress
+            }?.toFuzzyDate() ?: entry.completedAt?.fuzzyDate,
+        )
+    }
+
+    fun updateEntry(
+        oldEntry: BasicMediaListEntry? = null,
+        mediaId: Int,
+        status: MediaListStatus? = null,
+        score: Double? = null,
+        advancedScores: Collection<Double>? = null,
+        progress: Int? = null,
+        progressVolumes: Int? = null,
+        startedAt: FuzzyDate? = oldEntry?.startedAt?.fuzzyDate,
+        completedAt: FuzzyDate? = oldEntry?.completedAt?.fuzzyDate,
+        repeat: Int? = null,
+        private: Boolean? = null,
+        hiddenFromStatusLists: Boolean? = null,
+        notes: String? = null,
+        priority: Int? = null
+    ) = api
+        .updateEntryMutation(
+            mediaId = mediaId,
+            status = status.takeIf { status != oldEntry?.status },
+            score = score.takeIf { score != oldEntry?.score },
+            advancedScores = advancedScores?.toList()
+                .takeIf { oldEntry?.advancedScoresMap()?.values != advancedScores },
+            progress = progress.takeIf { progress != oldEntry?.progress },
+            progressVolumes = progressVolumes.takeIf { progressVolumes != oldEntry?.progressVolumes },
+            startedAt = startedAt?.toFuzzyDateInput(),
+            completedAt = completedAt?.toFuzzyDateInput(),
+            repeat = repeat.takeIf { repeat != oldEntry?.repeat },
+            private = private.takeIf { private != oldEntry?.private },
+            hiddenFromStatusLists = hiddenFromStatusLists
+                .takeIf { hiddenFromStatusLists != oldEntry?.hiddenFromStatusLists },
+            notes = notes.takeIf { notes != oldEntry?.notes },
+            priority = priority.takeIf { priority != oldEntry?.priority }
+        )
+        .toFlow()
+        .onEach {
+            it.data?.SaveMediaListEntry?.basicMediaListEntry?.let { entry ->
+                _lastUpdatedEntry.emit(entry)
+                api.updateMediaListCache(entry)
+            }
+        }
+        .asDataResult {
+            it.SaveMediaListEntry
+        }
+
+    fun updateEntryCustomLists(
+        mediaId: Int,
+        customLists: List<String?>,
+    ) = api
+        .updateEntryCustomListsMutation(mediaId, customLists)
+        .toFlow()
+        .onEach {
+            it.data?.SaveMediaListEntry?.basicMediaListEntry?.let { entry ->
+                _lastUpdatedEntry.emit(entry)
+                api.updateMediaListCache(entry)
+            }
+        }
+        .asDataResult {
+            it.SaveMediaListEntry
+        }
+
+    suspend fun deleteEntry(id: Int) = api
+        .deleteMediaListMutation(id)
+        .execute()
+        .asDataResult {
+            it.DeleteMediaListEntry
+        }
+
+    @Suppress("UNCHECKED_CAST")
+    fun getMediaListCustomLists(id: Int, userId: Int) = api
+        .mediaListCustomLists(id, userId)
+        .toFlow()
+        .asDataResult {
+            it.MediaList?.customLists as? LinkedHashMap<String, Boolean>
+        }
+
+    fun getMediaListIds(
+        userId: Int,
+        type: MediaType,
+        status: MediaListStatus?,
+        chunk: Int = 1,
+        perChunk: Int = 500,
+    ) = api
+        .mediaListIds(userId, type, status, chunk, perChunk)
+        .fetchPolicy(FetchPolicy.CacheFirst)
+        .toFlow()
+        .asPagedResult(
+            page = { CommonPage("", chunk, it.MediaListCollection?.hasNextChunk) }
+        ) { data ->
+            data.MediaListCollection?.lists
+                ?.flatMap { list ->
+                    list?.entries?.mapNotNull { it?.mediaId }.orEmpty()
+                }
+                .orEmpty()
+        }
+}

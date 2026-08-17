@@ -1,0 +1,164 @@
+package com.zykrave.anirumy.feature.profile.social
+
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Surface
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.zykrave.anirumy.core.ui.common.LocalNavActionManager
+import com.zykrave.anirumy.core.ui.composables.common.ErrorDialogHandler
+import com.zykrave.anirumy.core.ui.composables.common.FilterSelectionChip
+import com.zykrave.anirumy.core.ui.composables.list.OnBottomReached
+import com.zykrave.anirumy.core.ui.composables.media.MEDIA_POSTER_SMALL_WIDTH
+import com.zykrave.anirumy.core.ui.composables.person.PersonItemVertical
+import com.zykrave.anirumy.core.ui.composables.person.PersonItemVerticalPlaceholder
+import com.zykrave.anirumy.core.ui.theme.AniHyouTheme
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
+
+@Composable
+fun UserSocialView(
+    userId: Int,
+    modifier: Modifier = Modifier,
+) {
+    val viewModel: UserSocialViewModel = koinViewModel {
+        parametersOf(userId)
+    }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    UserSocialContent(
+        uiState = uiState,
+        event = viewModel,
+        modifier = modifier,
+    )
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun UserSocialContent(
+    uiState: UserSocialUiState,
+    event: UserSocialEvent?,
+    modifier: Modifier = Modifier,
+) {
+    val navActionManager = LocalNavActionManager.current
+    val pullRefreshState = rememberPullToRefreshState()
+    val listState = rememberLazyGridState()
+    if (!uiState.isLoading) {
+        listState.OnBottomReached(buffer = 3, onLoadMore = { event?.onLoadMore() })
+    }
+
+    ErrorDialogHandler(uiState, onDismiss = { event?.onErrorDisplayed() })
+
+    PullToRefreshBox(
+        isRefreshing = uiState.isLoading,
+        onRefresh = { event?.onRefresh() },
+        state = pullRefreshState,
+        indicator = {
+            PullToRefreshDefaults.LoadingIndicator(
+                state = pullRefreshState,
+                isRefreshing = uiState.isLoading,
+                modifier = Modifier.align(Alignment.TopCenter),
+            )
+        }
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .horizontalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                UserSocialType.entries.forEach {
+                    FilterSelectionChip(
+                        selected = uiState.type == it,
+                        text = it.localized(),
+                        onClick = { event?.setType(it) },
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                }
+            }//: Row
+
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(minSize = (MEDIA_POSTER_SMALL_WIDTH + 8).dp),
+                modifier = modifier.padding(horizontal = 8.dp),
+                state = listState,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
+            ) {
+                when (uiState.type) {
+                    UserSocialType.FOLLOWERS -> {
+                        items(
+                            items = uiState.followers,
+                            contentType = { it }
+                        ) { item ->
+                            PersonItemVertical(
+                                title = item.userFollow.name,
+                                imageUrl = item.userFollow.avatar?.large,
+                                onClick = {
+                                    navActionManager.toUserDetails(item.userFollow.id)
+                                }
+                            )
+                        }
+                        if (uiState.isLoading) {
+                            items(14) {
+                                PersonItemVerticalPlaceholder()
+                            }
+                        }
+                    }
+
+                    UserSocialType.FOLLOWING -> {
+                        items(
+                            items = uiState.following,
+                            contentType = { it }
+                        ) { item ->
+                            PersonItemVertical(
+                                title = item.userFollow.name,
+                                imageUrl = item.userFollow.avatar?.large,
+                                onClick = {
+                                    navActionManager.toUserDetails(item.userFollow.id)
+                                }
+                            )
+                        }
+                        if (uiState.isLoading) {
+                            items(14) {
+                                PersonItemVerticalPlaceholder()
+                            }
+                        }
+                    }
+                }
+            }//: LazyVerticalGrid
+        }//: Column
+    }
+}
+
+@Preview
+@Composable
+private fun UserSocialViewPreview() {
+    AniHyouTheme {
+        Surface {
+            UserSocialContent(
+                uiState = UserSocialUiState(userId = 0),
+                event = null,
+            )
+        }
+    }
+}

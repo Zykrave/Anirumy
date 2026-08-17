@@ -1,0 +1,44 @@
+package com.zykrave.anirumy.feature.usermedialist
+
+import androidx.compose.runtime.Immutable
+import com.zykrave.anirumy.core.base.event.UiEvent
+import com.zykrave.anirumy.core.network.fragment.BasicMediaListEntry
+import com.zykrave.anirumy.core.network.fragment.CommonMediaListEntry
+import com.zykrave.anirumy.core.network.type.MediaListSort
+import com.zykrave.anirumy.core.network.type.ScoreFormat
+
+@Immutable
+interface UserMediaListEvent : UiEvent {
+    fun setScoreFormat(value: ScoreFormat)
+
+    fun onChangeList(listName: String?)
+
+    fun setSort(value: MediaListSort)
+
+    fun toggleSortMenu(open: Boolean)
+
+    fun toggleNotesDialog(open: Boolean)
+
+    fun onClickNotes(value: CommonMediaListEntry?) {
+        selectItem(value)
+        toggleNotesDialog(true)
+    }
+
+    fun refreshList()
+
+    fun onClickPlusOne(increment: Int, entry: CommonMediaListEntry)
+
+    fun blockPlusOne()
+
+    fun onUpdateListEntry(newListEntry: BasicMediaListEntry?)
+
+    fun selectItem(value: CommonMediaListEntry?)
+
+    fun setScore(score: Double?)
+
+    fun toggleScoreDialog(open: Boolean)
+
+    fun getRandomPlannedEntry(chunk: Int = 1)
+
+    fun onRandomEntryOpened()
+}

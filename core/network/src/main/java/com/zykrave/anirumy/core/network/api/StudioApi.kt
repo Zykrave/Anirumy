@@ -1,0 +1,60 @@
+package com.zykrave.anirumy.core.network.api
+
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.Optional
+import com.apollographql.cache.normalized.apolloStore
+import com.zykrave.anirumy.core.network.SearchStudioQuery
+import com.zykrave.anirumy.core.network.StudioDetailsQuery
+import com.zykrave.anirumy.core.network.StudioMediaQuery
+
+class StudioApi (
+    private val client: ApolloClient
+) {
+    fun searchStudioQuery(
+        query: String,
+        page: Int,
+        perPage: Int,
+    ) = client
+        .query(
+            SearchStudioQuery(
+                page = Optional.present(page),
+                perPage = Optional.present(perPage),
+                search = Optional.present(query)
+            )
+        )
+
+    fun studioDetailsQuery(
+        studioId: Int,
+        perPage: Int
+    ) = client
+        .query(
+            StudioDetailsQuery(
+                studioId = Optional.present(studioId),
+                perPage = Optional.present(perPage)
+            )
+        )
+
+    suspend fun updateStudioDetailsCache(data: StudioDetailsQuery.Data) {
+        client.apolloStore
+            .writeOperation(
+                operation = StudioDetailsQuery(
+                    studioId = Optional.presentIfNotNull(data.Studio?.id)
+                ),
+                data = data,
+                publish = true,
+            )
+    }
+
+    fun studioMediaQuery(
+        studioId: Int,
+        page: Int,
+        perPage: Int,
+    ) = client
+        .query(
+            StudioMediaQuery(
+                studioId = Optional.present(studioId),
+                page = Optional.present(page),
+                perPage = Optional.present(perPage),
+            )
+        )
+}

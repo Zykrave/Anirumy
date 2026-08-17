@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.anihyou.feature)
+    alias(libs.plugins.anirumy.feature)
 }
 
 val appPackageName: String by rootProject.extra

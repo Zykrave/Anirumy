@@ -1,0 +1,170 @@
+package com.zykrave.anirumy.feature.profile.stats
+
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Surface
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.zykrave.anirumy.core.ui.common.LocalNavActionManager
+import com.zykrave.anirumy.core.ui.composables.common.ErrorDialogHandler
+import com.zykrave.anirumy.core.ui.composables.common.FilterSelectionChip
+import com.zykrave.anirumy.core.ui.theme.AniHyouTheme
+import com.zykrave.anirumy.feature.profile.stats.genres.GenresStatsView
+import com.zykrave.anirumy.feature.profile.stats.overview.OverviewStatsView
+import com.zykrave.anirumy.feature.profile.stats.staff.StaffStatsView
+import com.zykrave.anirumy.feature.profile.stats.studios.StudiosStatsView
+import com.zykrave.anirumy.feature.profile.stats.tags.TagsStatsView
+import com.zykrave.anirumy.feature.profile.stats.voiceactors.VoiceActorsStatsView
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
+
+@Composable
+fun UserStatsView(
+    userId: Int,
+    modifier: Modifier = Modifier,
+    nestedScrollConnection: NestedScrollConnection,
+) {
+    val viewModel: UserStatsViewModel = koinViewModel {
+        parametersOf(userId)
+    }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    UserStatsContent(
+        uiState = uiState,
+        event = viewModel,
+        modifier = modifier,
+        nestedScrollConnection = nestedScrollConnection
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun UserStatsContent(
+    uiState: UserStatsUiState,
+    event: UserStatsEvent?,
+    modifier: Modifier = Modifier,
+    nestedScrollConnection: NestedScrollConnection,
+) {
+    val navActionManager = LocalNavActionManager.current
+    val pullRefreshState = rememberPullToRefreshState()
+
+    ErrorDialogHandler(uiState, onDismiss = { event?.onErrorDisplayed() })
+
+    PullToRefreshBox(
+        isRefreshing = uiState.isLoading,
+        onRefresh = { event?.onRefresh() },
+        state = pullRefreshState,
+        indicator = {
+            PullToRefreshDefaults.LoadingIndicator(
+                state = pullRefreshState,
+                isRefreshing = uiState.isLoading,
+                modifier = Modifier.align(Alignment.TopCenter),
+            )
+        }
+    ) {
+        Column(
+            modifier = modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .horizontalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                UserStatType.entries.forEach {
+                    FilterSelectionChip(
+                        selected = uiState.type == it,
+                        text = it.localized(),
+                        onClick = {
+                            event?.setType(it)
+                        },
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                }
+            }//: Row
+
+            when (uiState.type) {
+                UserStatType.OVERVIEW -> {
+                    OverviewStatsView(
+                        uiState = uiState,
+                        event = event,
+                        modifier = Modifier
+                            .nestedScroll(nestedScrollConnection)
+                            .verticalScroll(rememberScrollState())
+                            .navigationBarsPadding()
+                    )
+                }
+
+                UserStatType.GENRES -> {
+                    GenresStatsView(
+                        uiState = uiState,
+                        event = event,
+                        modifier = Modifier.nestedScroll(nestedScrollConnection)
+                    )
+                }
+
+                UserStatType.TAGS -> {
+                    TagsStatsView(
+                        uiState = uiState,
+                        event = event,
+                        modifier = Modifier.nestedScroll(nestedScrollConnection)
+                    )
+                }
+
+                UserStatType.STAFF -> {
+                    StaffStatsView(
+                        uiState = uiState,
+                        event = event,
+                        modifier = Modifier.nestedScroll(nestedScrollConnection)
+                    )
+                }
+
+                UserStatType.VOICE_ACTORS -> {
+                    VoiceActorsStatsView(
+                        uiState = uiState,
+                        event = event,
+                    )
+                }
+
+                UserStatType.STUDIOS -> {
+                    StudiosStatsView(
+                        uiState = uiState,
+                        event = event,
+                    )
+                }
+            }
+        }//: Column
+    }
+}
+
+@Preview
+@Composable
+private fun UserStatsViewPreview() {
+    AniHyouTheme {
+        Surface {
+            UserStatsContent(
+                uiState = UserStatsUiState(userId = 0),
+                event = null,
+                nestedScrollConnection = rememberNestedScrollInteropConnection()
+            )
+        }
+    }
+}

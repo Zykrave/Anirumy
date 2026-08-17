@@ -1,0 +1,34 @@
+package com.zykrave.anirumy.feature.profile.favorites
+
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import com.zykrave.anirumy.core.network.UserFavoritesAnimeQuery
+import com.zykrave.anirumy.core.network.UserFavoritesCharacterQuery
+import com.zykrave.anirumy.core.network.UserFavoritesMangaQuery
+import com.zykrave.anirumy.core.network.UserFavoritesStaffQuery
+import com.zykrave.anirumy.core.network.UserFavoritesStudioQuery
+import com.zykrave.anirumy.core.base.state.PagedUiState
+import com.zykrave.anirumy.core.model.FavoritesType
+
+@Stable
+data class UserFavoritesUiState(
+    val userId: Int,
+    val isMyProfile: Boolean,
+    val type: FavoritesType = FavoritesType.ANIME,
+    val anime: SnapshotStateList<UserFavoritesAnimeQuery.Node> = mutableStateListOf(),
+    val manga: SnapshotStateList<UserFavoritesMangaQuery.Node> = mutableStateListOf(),
+    val characters: SnapshotStateList<UserFavoritesCharacterQuery.Node> = mutableStateListOf(),
+    val staff: SnapshotStateList<UserFavoritesStaffQuery.Node> = mutableStateListOf(),
+    val studios: SnapshotStateList<UserFavoritesStudioQuery.Node> = mutableStateListOf(),
+    val fetchFromNetwork: Boolean = false,
+    override val page: Int = 1,
+    override val hasNextPage: Boolean = true,
+    override val error: String? = null,
+    override val isLoading: Boolean = true,
+) : PagedUiState() {
+    override fun setError(value: String?) = copy(error = value)
+    override fun setLoading(value: Boolean) = copy(isLoading = value)
+    override fun setHasNextPage(value: Boolean) = copy(hasNextPage = value)
+    override fun setPage(value: Int) = copy(page = value)
+}

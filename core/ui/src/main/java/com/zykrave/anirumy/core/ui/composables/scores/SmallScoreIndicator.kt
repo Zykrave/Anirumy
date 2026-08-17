@@ -1,0 +1,57 @@
+package com.zykrave.anirumy.core.ui.composables.scores
+
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.zykrave.anirumy.core.common.utils.NumberUtils.format
+import com.zykrave.anirumy.core.model.point100PrimaryColor
+import com.zykrave.anirumy.core.resources.R
+import com.zykrave.anirumy.core.ui.common.LocalHideScores
+import com.zykrave.anirumy.core.ui.theme.AniHyouTheme
+
+@Composable
+fun SmallScoreIndicator(
+    score: Int,
+    modifier: Modifier = Modifier,
+) {
+    if (!LocalHideScores.current) {
+        val tint = score.point100PrimaryColor()
+        Row(
+            modifier = modifier,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.star_filled_20),
+                contentDescription = stringResource(R.string.mean_score),
+                modifier = Modifier.padding(bottom = 2.dp),
+                tint = tint
+            )
+            Text(
+                text = "${score.format()}%",
+                modifier = Modifier.padding(horizontal = 4.dp),
+                style = MaterialTheme.typography.labelMedium,
+                color = tint,
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun SmallScoreIndicatorPreview() {
+    AniHyouTheme {
+        Surface {
+            SmallScoreIndicator(score = 75)
+        }
+    }
+}

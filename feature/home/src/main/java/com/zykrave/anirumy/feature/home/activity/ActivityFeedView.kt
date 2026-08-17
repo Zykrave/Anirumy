@@ -1,0 +1,194 @@
+package com.zykrave.anirumy.feature.home.activity
+
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Surface
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation3.runtime.result.ResultEffect
+import com.zykrave.anirumy.core.model.activity.text
+import com.zykrave.anirumy.core.network.fragment.TextActivityFragment
+import com.zykrave.anirumy.core.network.type.ActivityType
+import com.zykrave.anirumy.core.ui.common.LocalBlurAdult
+import com.zykrave.anirumy.core.ui.common.LocalNavActionManager
+import com.zykrave.anirumy.core.ui.composables.activity.ActivityFeedItem
+import com.zykrave.anirumy.core.ui.composables.activity.ActivityItemPlaceholder
+import com.zykrave.anirumy.core.ui.composables.common.ErrorDialogHandler
+import com.zykrave.anirumy.core.ui.composables.list.OnBottomReached
+import com.zykrave.anirumy.core.ui.theme.AniHyouTheme
+import com.zykrave.anirumy.feature.home.activity.composables.ActivityFollowingChip
+import com.zykrave.anirumy.feature.home.activity.composables.ActivityFollowingFilterChip
+import com.zykrave.anirumy.feature.home.activity.composables.ActivityTypeChip
+import org.koin.compose.viewmodel.koinActivityViewModel
+
+@Composable
+fun ActivityFeedView(
+    modifier: Modifier = Modifier,
+) {
+    val viewModel: ActivityFeedViewModel = koinActivityViewModel()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    ActivityFeedContent(
+        modifier = modifier,
+        uiState = uiState,
+        event = viewModel,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun ActivityFeedContent(
+    modifier: Modifier = Modifier,
+    uiState: ActivityFeedUiState,
+    event: ActivityFeedEvent?,
+) {
+    val navActionManager = LocalNavActionManager.current
+    val blurAdult = LocalBlurAdult.current
+    val pullRefreshState = rememberPullToRefreshState()
+
+    val listState = rememberLazyListState()
+    listState.OnBottomReached(buffer = 3, onLoadMore = { event?.onLoadMore() })
+
+    ErrorDialogHandler(uiState, onDismiss = { event?.onErrorDisplayed() })
+
+    ResultEffect<TextActivityFragment> {
+        event?.refreshList()
+    }
+
+    PullToRefreshBox(
+        isRefreshing = uiState.isLoading,
+        onRefresh = { event?.refreshList() },
+        modifier = Modifier.fillMaxSize(),
+        state = pullRefreshState,
+        indicator = {
+            PullToRefreshDefaults.LoadingIndicator(
+                state = pullRefreshState,
+                isRefreshing = uiState.isLoading,
+                modifier = Modifier.align(Alignment.TopCenter),
+            )
+        }
+    ) {
+        LazyColumn(
+            modifier = modifier.fillMaxSize(),
+            state = listState,
+        ) {
+            item {
+                Row(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    ActivityTypeChip(
+                        value = uiState.type,
+                        onValueChanged = { event?.setType(it) }
+                    )
+                    ActivityFollowingChip(
+                        value = uiState.isFollowing,
+                        onValueChanged = { event?.setIsFollowing(it) }
+                    )
+                    ActivityFollowingFilterChip(
+                        followingUsers = uiState.followingUsers,
+                        selectedIds = uiState.followingFilters,
+                        onValueChanged = { event?.setFollowingFilters(it) },
+                        enabled = uiState.isFollowing,
+                    )
+                }
+            }
+            if (uiState.isLoading) {
+                items(10) {
+                    ActivityItemPlaceholder(
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
+            }
+            items(
+                items = uiState.activities,
+                contentType = { it }
+            ) { item ->
+                item.onListActivity?.listActivityFragment?.let {
+                    ActivityFeedItem(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        type = ActivityType.MEDIA_LIST,
+                        username = it.user?.activityUser?.name,
+                        avatarUrl = it.user?.activityUser?.avatar?.medium,
+                        createdAt = it.createdAt,
+                        text = it.text(),
+                        replyCount = it.replyCount,
+                        likeCount = it.likeCount,
+                        isLiked = it.isLiked,
+                        blurCover = blurAdult && it.media?.isAdult == true,
+                        mediaCoverUrl = it.media?.coverImage?.medium,
+                        onClick = {
+                            navActionManager.toActivityDetails(it.id)
+                        },
+                        onClickUser = {
+                            it.userId?.let(navActionManager::toUserDetails)
+                        },
+                        onClickLike = {
+                            event?.toggleLikeActivity(it.id)
+                        },
+                        onClickMedia = {
+                            it.media?.id?.let(navActionManager::toMediaDetails)
+                        },
+                    )
+                    HorizontalDivider(modifier = Modifier.padding(bottom = 16.dp))
+                }
+                item.onTextActivity?.textActivityFragment?.let {
+                    ActivityFeedItem(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        type = ActivityType.TEXT,
+                        username = it.user?.activityUser?.name,
+                        avatarUrl = it.user?.activityUser?.avatar?.medium,
+                        createdAt = it.createdAt,
+                        text = it.text.orEmpty(),
+                        replyCount = it.replyCount,
+                        likeCount = it.likeCount,
+                        isLiked = it.isLiked,
+                        onClick = {
+                            navActionManager.toActivityDetails(it.id)
+                        },
+                        onClickUser = {
+                            it.userId?.let(navActionManager::toUserDetails)
+                        },
+                        onClickLike = {
+                            event?.toggleLikeActivity(it.id)
+                        },
+                    )
+                    HorizontalDivider(modifier = Modifier.padding(bottom = 16.dp))
+                }
+            }
+        }//:LazyColumn
+    }//:Box
+}
+
+@Preview
+@Composable
+private fun ActivityFeedViewPreview() {
+    AniHyouTheme {
+        Surface {
+            ActivityFeedContent(
+                uiState = ActivityFeedUiState(),
+                event = null,
+            )
+        }
+    }
+}

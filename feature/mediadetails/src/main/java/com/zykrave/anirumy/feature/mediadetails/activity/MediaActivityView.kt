@@ -1,0 +1,167 @@
+package com.zykrave.anirumy.feature.mediadetails.activity
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.plus
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LoadingIndicator
+import androidx.compose.material3.Surface
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.zykrave.anirumy.core.model.activity.text
+import com.zykrave.anirumy.core.network.type.ActivityType
+import com.zykrave.anirumy.core.resources.R
+import com.zykrave.anirumy.core.ui.common.LocalBlurAdult
+import com.zykrave.anirumy.core.ui.common.LocalNavActionManager
+import com.zykrave.anirumy.core.ui.common.navigation.Route
+import com.zykrave.anirumy.core.ui.composables.DefaultScaffoldWithSmallTopAppBar
+import com.zykrave.anirumy.core.ui.composables.activity.ActivityFeedItem
+import com.zykrave.anirumy.core.ui.composables.activity.ActivityItemPlaceholder
+import com.zykrave.anirumy.core.ui.composables.common.BackIconButton
+import com.zykrave.anirumy.core.ui.composables.common.ErrorDialogHandler
+import com.zykrave.anirumy.core.ui.theme.AniHyouTheme
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
+
+@Composable
+fun MediaActivityView(
+    arguments: Route.MediaActivity,
+) {
+    val viewModel: MediaActivityViewModel = koinViewModel(parameters = { parametersOf(arguments) })
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    MediaActivityContent(
+        uiState = uiState,
+        event = viewModel,
+    )
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
+@Composable
+private fun MediaActivityContent(
+    uiState: MediaActivityUiState,
+    event: MediaActivityEvent?,
+) {
+    val navActionManager = LocalNavActionManager.current
+    val blurAdult = LocalBlurAdult.current
+    val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+        rememberTopAppBarState()
+    )
+
+    ErrorDialogHandler(uiState, onDismiss = { event?.onErrorDisplayed() })
+
+    DefaultScaffoldWithSmallTopAppBar(
+        title = stringResource(R.string.activity),
+        navigationIcon = {
+            BackIconButton(
+                onClick = navActionManager::goBack
+            )
+        },
+        actions = {
+            IconButton(
+                onClick = { event?.setIsMine(!uiState.isMine) },
+                shapes = IconButtonDefaults.shapes()
+            ) {
+                Icon(
+                    painter = painterResource(
+                        id = if (uiState.isMine) R.drawable.person_filled_24
+                        else R.drawable.person_24
+                    ),
+                    contentDescription = null
+                )
+            }
+        },
+        scrollBehavior = topAppBarScrollBehavior
+    ) { padding ->
+        LazyColumn(
+            modifier = Modifier
+                .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+            contentPadding = PaddingValues(top = 8.dp) + padding
+        ) {
+            if (uiState.isLoading) {
+                items(10) {
+                    ActivityItemPlaceholder(
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
+            }
+            items(
+                items = uiState.activities,
+                contentType = { it }
+            ) { item ->
+                ActivityFeedItem(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    type = ActivityType.MEDIA_LIST,
+                    username = item.user?.activityUser?.name,
+                    avatarUrl = item.user?.activityUser?.avatar?.medium,
+                    createdAt = item.createdAt,
+                    text = item.text(),
+                    replyCount = item.replyCount,
+                    likeCount = item.likeCount,
+                    isLiked = item.isLiked,
+                    blurCover = blurAdult && item.media?.isAdult == true,
+                    mediaCoverUrl = item.media?.coverImage?.medium,
+                    showMenu = uiState.isMine,
+                    onClick = {
+                        navActionManager.toActivityDetails(item.id)
+                    },
+                    onClickUser = {
+                        item.userId?.let(navActionManager::toUserDetails)
+                    },
+                    onClickLike = {
+                        event?.toggleLikeActivity(item.id)
+                    },
+                    onClickDelete = {
+                        event?.deleteActivity(item.id)
+                    },
+                )
+                HorizontalDivider(modifier = Modifier.padding(bottom = 16.dp))
+            }
+            item(contentType = { 0 }) {
+                if (uiState.hasNextPage) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        LoadingIndicator(
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                    LaunchedEffect(uiState.isLoading) {
+                        if (!uiState.isLoading) event?.onLoadMore()
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun MediaActivityViewPreview() {
+    AniHyouTheme {
+        Surface {
+            MediaActivityContent(
+                uiState = MediaActivityUiState(),
+                event = null,
+            )
+        }
+    }
+}

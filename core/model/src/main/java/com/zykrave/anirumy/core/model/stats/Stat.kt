@@ -1,0 +1,39 @@
+package com.zykrave.anirumy.core.model.stats
+
+import androidx.annotation.StringRes
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
+import androidx.compose.ui.res.stringResource
+
+abstract class Stat<T> {
+    abstract val type: T
+    abstract val value: Float
+    abstract val details: List<Detail>?
+
+    data class Detail(
+        @param:StringRes
+        /**
+         * This should be a string resource with one `%s`
+         * so [text] can be formatted with the [value] argument
+         */
+        val name: Int,
+        val value: String
+    ) {
+        @Composable
+        fun text() = stringResource(id = name, value)
+    }
+}
+
+@Stable
+data class StatLocalizableAndColorable<T>(
+    override val type: T,
+    override val value: Float,
+    override val details: List<Detail>? = null,
+) : Stat<T>() where T : com.zykrave.anirumy.core.model.base.Localizable, T : com.zykrave.anirumy.core.model.base.Colorable
+
+@Stable
+data class StatColorable<T : com.zykrave.anirumy.core.model.base.Colorable>(
+    override val type: T,
+    override val value: Float,
+    override val details: List<Detail>? = null,
+) : Stat<T>()

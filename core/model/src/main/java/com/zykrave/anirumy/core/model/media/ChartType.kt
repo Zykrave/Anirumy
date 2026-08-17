@@ -1,0 +1,104 @@
+package com.zykrave.anirumy.core.model.media
+
+import androidx.annotation.DrawableRes
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.zykrave.anirumy.core.network.type.MediaFormat
+import com.zykrave.anirumy.core.network.type.MediaSort
+import com.zykrave.anirumy.core.network.type.MediaStatus
+import com.zykrave.anirumy.core.network.type.MediaType
+import com.zykrave.anirumy.core.model.base.Localizable
+import com.zykrave.anirumy.core.resources.R
+
+enum class ChartType : Localizable {
+    TOP_ANIME,
+    POPULAR_ANIME,
+    UPCOMING_ANIME,
+    AIRING_ANIME,
+    TOP_MOVIES,
+    TOP_MANGA,
+    POPULAR_MANGA,
+    UPCOMING_MANGA,
+    PUBLISHING_MANGA;
+
+    @Composable
+    override fun localized() = when (this) {
+        TOP_ANIME -> stringResource(R.string.top_100)
+        POPULAR_ANIME -> stringResource(R.string.top_popular)
+        UPCOMING_ANIME -> stringResource(R.string.upcoming)
+        AIRING_ANIME -> stringResource(R.string.airing)
+        TOP_MOVIES -> stringResource(R.string.top_movies)
+        TOP_MANGA -> stringResource(R.string.top_100)
+        POPULAR_MANGA -> stringResource(R.string.top_popular)
+        UPCOMING_MANGA -> stringResource(R.string.upcoming)
+        PUBLISHING_MANGA -> stringResource(R.string.publishing)
+    }
+
+    @DrawableRes
+    fun icon() = when (this) {
+        TOP_ANIME -> R.drawable.star_20
+        POPULAR_ANIME -> R.drawable.trending_up_20
+        UPCOMING_ANIME -> R.drawable.schedule_20
+        AIRING_ANIME -> R.drawable.rss_feed_20
+        TOP_MOVIES -> R.drawable.movie_20
+        TOP_MANGA -> R.drawable.star_20
+        POPULAR_MANGA -> R.drawable.trending_up_20
+        UPCOMING_MANGA -> R.drawable.schedule_20
+        PUBLISHING_MANGA -> R.drawable.rss_feed_20
+    }
+
+    val mediaType
+        get() = when (this) {
+            TOP_ANIME,
+            POPULAR_ANIME,
+            UPCOMING_ANIME,
+            AIRING_ANIME,
+            TOP_MOVIES -> MediaType.ANIME
+
+            TOP_MANGA,
+            POPULAR_MANGA,
+            UPCOMING_MANGA,
+            PUBLISHING_MANGA -> MediaType.MANGA
+        }
+
+    val mediaSort
+        get() = when (this) {
+            TOP_ANIME,
+            TOP_MOVIES,
+            TOP_MANGA,
+            AIRING_ANIME,
+            PUBLISHING_MANGA -> MediaSort.SCORE_DESC
+
+            POPULAR_ANIME,
+            UPCOMING_ANIME,
+            POPULAR_MANGA,
+            UPCOMING_MANGA -> MediaSort.POPULARITY_DESC
+        }
+
+    val mediaStatus
+        get() = when (this) {
+            UPCOMING_ANIME,
+            UPCOMING_MANGA -> MediaStatus.NOT_YET_RELEASED
+
+            AIRING_ANIME,
+            PUBLISHING_MANGA -> MediaStatus.RELEASING
+
+            else -> null
+        }
+
+    val mediaFormat
+        get() = when (this) {
+            TOP_MOVIES -> MediaFormat.MOVIE
+            else -> null
+        }
+
+    companion object {
+        val animeCharts = listOf(
+            TOP_ANIME, POPULAR_ANIME, UPCOMING_ANIME, AIRING_ANIME, TOP_MOVIES
+        )
+
+        val mangaCharts = listOf(
+            TOP_MANGA, POPULAR_MANGA, UPCOMING_MANGA, PUBLISHING_MANGA
+        )
+    }
+}

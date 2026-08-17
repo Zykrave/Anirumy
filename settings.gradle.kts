@@ -24,7 +24,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AniHyou"
+rootProject.name = "AniRumy"
 include(":app")
 include(":baselineprofile")
 include(":core:base")

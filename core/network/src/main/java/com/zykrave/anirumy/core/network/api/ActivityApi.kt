@@ -1,0 +1,87 @@
+package com.zykrave.anirumy.core.network.api
+
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.Optional
+import com.apollographql.cache.normalized.FetchPolicy
+import com.apollographql.cache.normalized.apolloStore
+import com.apollographql.cache.normalized.fetchPolicy
+import com.zykrave.anirumy.core.network.ActivityDetailsQuery
+import com.zykrave.anirumy.core.network.ActivityFeedQuery
+import com.zykrave.anirumy.core.network.DeleteActivityMutation
+import com.zykrave.anirumy.core.network.UpdateActivityReplyMutation
+import com.zykrave.anirumy.core.network.UpdateTextActivityMutation
+import com.zykrave.anirumy.core.network.type.ActivityType
+
+class ActivityApi(
+    private val client: ApolloClient
+) {
+    fun activityFeedQuery(
+        isFollowing: Boolean,
+        typeIn: List<ActivityType>?,
+        userIdIn: List<Int>?,
+        fetchFromNetwork: Boolean,
+        page: Int,
+        perPage: Int,
+    ) = client
+        .query(
+            ActivityFeedQuery(
+                page = Optional.present(page),
+                perPage = Optional.present(perPage),
+                isFollowing = Optional.present(isFollowing),
+                typeIn = Optional.presentIfNotNull(typeIn),
+                userIdIn = Optional.presentIfNotNull(userIdIn),
+            )
+        )
+        .fetchPolicy(if (fetchFromNetwork) FetchPolicy.NetworkFirst else FetchPolicy.CacheFirst)
+
+    fun activityDetailsQuery(activityId: Int) = client
+        .query(
+            ActivityDetailsQuery(
+                activityId = Optional.present(activityId)
+            )
+        )
+
+    suspend fun updateActivityDetailsCache(
+        id: Int,
+        activity: ActivityDetailsQuery.Activity,
+    ) {
+        val result = client.apolloStore
+            .writeOperation(
+                operation = ActivityDetailsQuery(
+                    activityId = Optional.present(id)
+                ),
+                data = ActivityDetailsQuery.Data(
+                    Activity = activity
+                ),
+                publish = true
+            )
+        client.apolloStore.publish(result)
+    }
+
+    fun updateTextActivityMutation(
+        id: Int?,
+        text: String
+    ) = client
+        .mutation(
+            UpdateTextActivityMutation(
+                id = Optional.presentIfNotNull(id),
+                text = Optional.present(text)
+            )
+        )
+
+    fun updateActivityReplyMutation(
+        activityId: Int,
+        id: Int?,
+        text: String
+    ) = client
+        .mutation(
+            UpdateActivityReplyMutation(
+                activityId = Optional.present(activityId),
+                id = Optional.presentIfNotNull(id),
+                text = Optional.present(text)
+            )
+        )
+
+    fun deleteActivityMutation(id: Int) = client
+        .mutation(DeleteActivityMutation(id = Optional.present(id)))
+}

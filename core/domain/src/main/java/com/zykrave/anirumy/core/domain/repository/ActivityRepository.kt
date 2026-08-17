@@ -1,0 +1,76 @@
+package com.zykrave.anirumy.core.domain.repository
+
+import com.apollographql.cache.normalized.FetchPolicy
+import com.apollographql.cache.normalized.fetchPolicy
+import com.zykrave.anirumy.core.network.ActivityDetailsQuery
+import com.zykrave.anirumy.core.network.api.ActivityApi
+import com.zykrave.anirumy.core.network.type.ActivityType
+
+class ActivityRepository(
+    private val api: ActivityApi,
+    defaultPreferencesRepository: DefaultPreferencesRepository,
+) : BaseNetworkRepository(defaultPreferencesRepository) {
+
+    fun getActivityFeed(
+        isFollowing: Boolean,
+        typeIn: List<ActivityType>,
+        userIdIn: List<Int>? = null,
+        fetchFromNetwork: Boolean = false,
+        page: Int,
+        perPage: Int = 25
+    ) = api
+        .activityFeedQuery(
+            isFollowing = isFollowing,
+            typeIn = typeIn,
+            userIdIn = userIdIn,
+            fetchFromNetwork = fetchFromNetwork,
+            page = page,
+            perPage = perPage
+        )
+        .toFlow()
+        .asPagedResult(page = { it.Page?.pageInfo?.commonPage }) {
+            it.Page?.activities?.filterNotNull().orEmpty()
+        }
+
+    fun getActivityDetails(
+        activityId: Int,
+        fetchFromNetwork: Boolean = false
+    ) = api
+        .activityDetailsQuery(activityId)
+        .fetchPolicy(if (fetchFromNetwork) FetchPolicy.NetworkFirst else FetchPolicy.CacheFirst)
+        .toFlow()
+        .asDataResult {
+            it.Activity
+        }
+
+    suspend fun updateActivityDetailsCache(
+        id: Int,
+        activity: ActivityDetailsQuery.Activity,
+    ) = api.updateActivityDetailsCache(id, activity)
+
+    suspend fun updateTextActivity(
+        id: Int? = null,
+        text: String
+    ) = api
+        .updateTextActivityMutation(id, text)
+        .execute()
+        .asDataResult {
+            it.SaveTextActivity?.onTextActivity?.textActivityFragment
+        }
+
+    suspend fun updateActivityReply(
+        activityId: Int,
+        id: Int? = null,
+        text: String
+    ) = api
+        .updateActivityReplyMutation(activityId, id, text)
+        .execute()
+        .asDataResult {
+            it.SaveActivityReply?.activityReplyFragment
+        }
+
+    suspend fun deleteActivity(id: Int) = api
+        .deleteActivityMutation(id)
+        .execute()
+        .asDataResult { it.DeleteActivity?.deleted }
+}
