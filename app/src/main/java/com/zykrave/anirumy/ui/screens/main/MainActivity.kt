@@ -34,6 +34,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
@@ -213,6 +215,7 @@ fun MainView(
     }
     val navigationState = rememberNavigationState(startKey, BottomDestination.routes)
     val navigator = remember { Navigator(navigationState) }
+    val hazeState = rememberHazeState()
     val isBottomDestination by remember {
         derivedStateOf { navigationState.getCurrentRoute()?.isBottomDestination() == true }
     }
@@ -239,12 +242,14 @@ fun MainView(
                         deepLink = deepLink,
                         homeTab = homeTab,
                         padding = padding,
+                        modifier = Modifier.hazeSource(hazeState),
                     )
                     Box(modifier = Modifier.align(Alignment.BottomCenter)) {
                         MainBottomNavBar(
                             currentTopRoute = navigator.state.topLevelRoute,
                             isVisible = isBottomDestination,
-                            onItemSelected = { event?.saveLastTab(it) }
+                            onItemSelected = { event?.saveLastTab(it) },
+                            hazeState = hazeState
                         )
                     }
                 }
