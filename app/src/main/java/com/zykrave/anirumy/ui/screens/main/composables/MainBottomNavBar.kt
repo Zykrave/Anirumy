@@ -20,6 +20,10 @@ import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeInput
+import dev.chrisbanes.haze.blur.HazeBlurStyle
+import dev.chrisbanes.haze.blur.hazeBlur
 import com.zykrave.anirumy.core.ui.common.BottomDestination
 import com.zykrave.anirumy.core.ui.common.BottomDestination.Companion.testTag
 import com.zykrave.anirumy.core.ui.common.LocalNavActionManager
@@ -31,6 +35,7 @@ fun MainBottomNavBar(
     currentTopRoute: Route,
     isVisible: Boolean,
     onItemSelected: (Int) -> Unit,
+    hazeState: HazeState,
 ) {
     val navActionManager = LocalNavActionManager.current
     AnimatedVisibility(
@@ -43,12 +48,20 @@ fun MainBottomNavBar(
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 16.dp)
                 .clip(RoundedCornerShape(20.dp))
+                .hazeBlur(
+                    input = HazeInput.Sources(hazeState),
+                    style = HazeBlurStyle {
+                        backgroundColor(Color(0xFF1A1B2E).copy(alpha = 0.5f))
+                        blurRadius(20.dp)
+                        noiseFactor(0.05f)
+                    }
+                )
                 .border(
                     width = 1.dp,
                     color = Color.White.copy(alpha = 0.12f),
                     shape = RoundedCornerShape(20.dp)
                 ),
-            containerColor = Color(0xFF1A1B2E).copy(alpha = 0.7f)
+            containerColor = Color.Transparent
         ) {
             BottomDestination.values.forEachIndexed { index, dest ->
                 val isSelected = dest.route == currentTopRoute
