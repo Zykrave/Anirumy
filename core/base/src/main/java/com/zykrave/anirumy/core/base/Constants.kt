@@ -4,7 +4,7 @@ package com.zykrave.anirumy.core.base
 
 private const val CLIENT_ID = "48595"
 
-const val APP_PACKAGE_NAME = "com.axiel7.anirumy"
+const val APP_PACKAGE_NAME = "com.zykrave.anirumy"
 
 const val ANILIST_GRAPHQL_URL = "https://graphql.anilist.co"
 const val ANILIST_URL = "https://anilist.co"

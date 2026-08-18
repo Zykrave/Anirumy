@@ -21,7 +21,7 @@
 #-renamesourcefileattribute SourceFile
 
 -keepattributes *Annotation*, InnerClasses
--keep,includedescriptorclasses class com.axiel7.anihyou.**$$serializer { *; }
+-keep,includedescriptorclasses class com.zykrave.anirumy.**$$serializer { *; }
 
 -keepclassmembers class * extends androidx.datastore.preferences.protobuf.GeneratedMessageLite {
     <fields>;
