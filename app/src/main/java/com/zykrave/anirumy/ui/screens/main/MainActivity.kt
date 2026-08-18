@@ -9,6 +9,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -31,6 +32,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
@@ -223,28 +225,29 @@ fun MainView(
 
     CompositionLocalProvider(LocalNavActionManager provides navActionManager) {
         Scaffold(
-            bottomBar = {
-                if (isCompactScreen) {
-                    MainBottomNavBar(
-                        currentTopRoute = navigator.state.topLevelRoute,
-                        isVisible = isBottomDestination,
-                        onItemSelected = { event?.saveLastTab(it) }
-                    )
-                }
-            },
+            bottomBar = {},
             contentWindowInsets = if (isCompactScreen) WindowInsets.systemBars
                 .only(WindowInsetsSides.Horizontal)
             else WindowInsets(0, 0, 0, 0)
         ) { padding ->
             if (isCompactScreen) {
-                MainNavigation(
-                    navigator = navigator,
-                    isCompactScreen = true,
-                    isLoggedIn = isLoggedIn,
-                    deepLink = deepLink,
-                    homeTab = homeTab,
-                    padding = padding,
-                )
+                Box(modifier = Modifier.fillMaxSize()) {
+                    MainNavigation(
+                        navigator = navigator,
+                        isCompactScreen = true,
+                        isLoggedIn = isLoggedIn,
+                        deepLink = deepLink,
+                        homeTab = homeTab,
+                        padding = padding,
+                    )
+                    Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+                        MainBottomNavBar(
+                            currentTopRoute = navigator.state.topLevelRoute,
+                            isVisible = isBottomDestination,
+                            onItemSelected = { event?.saveLastTab(it) }
+                        )
+                    }
+                }
             } else {
                 Row(
                     modifier = Modifier.padding(padding)
