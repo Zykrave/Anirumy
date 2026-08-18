@@ -188,6 +188,8 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.gif)
     implementation(libs.coil.network.okhttp)
+    implementation(libs.haze)
+    implementation(libs.haze.blur)
 
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.annotations)
