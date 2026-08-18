@@ -7,11 +7,13 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.cache.normalized.FetchPolicy
 import com.apollographql.cache.normalized.fetchPolicy
 import com.zykrave.anirumy.core.network.ViewerOptionsQuery
+import com.zykrave.anirumy.core.network.NetworkVariables
 import com.zykrave.anirumy.core.network.api.response.errorString
 
 class LoginRepository (
     private val client: ApolloClient,
     private val defaultPreferencesRepository: DefaultPreferencesRepository,
+    private val networkVariables: NetworkVariables,
 ) {
 
     // login
@@ -23,6 +25,7 @@ class LoginRepository (
     }
 
     suspend fun onNewToken(token: String) {
+        networkVariables.accessToken = token
         defaultPreferencesRepository.setAccessToken(token)
         refreshUserIdAndOptions()
     }

@@ -2,7 +2,7 @@
 
 package com.zykrave.anirumy.core.base
 
-private const val CLIENT_ID = "8527"
+private const val CLIENT_ID = "48595"
 
 const val APP_PACKAGE_NAME = "com.axiel7.anirumy"
 
