@@ -93,6 +93,7 @@ fun MainNavigation(
     homeTab: HomeTab,
     deepLink: DeepLink?,
     padding: PaddingValues = PaddingValues(),
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val navActionManager = LocalNavActionManager.current
@@ -404,7 +405,7 @@ fun MainNavigation(
     CompositionLocalProvider(LocalMarkdownUriHandler provides markdownUriHandler) {
         NavDisplay(
             entries = navigator.state.toDecoratedEntries(entryProvider),
-            modifier = Modifier.padding(
+            modifier = modifier.padding(
                 start = padding.calculateStartPadding(LocalLayoutDirection.current),
                 top = padding.calculateTopPadding(),
                 end = padding.calculateEndPadding(LocalLayoutDirection.current),
