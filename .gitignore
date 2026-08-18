@@ -12,3 +12,13 @@
 local.properties
 /fastlane/report.xml
 .kotlin
+# Debug/scratch output files
+build_log.txt
+format_imports.txt
+format_no_args_usage.txt
+format_usage.txt
+items_imports.txt
+items_usage.txt
+my_build_output.txt
+r_imports.txt
+r_usage.txt
