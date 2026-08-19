@@ -165,6 +165,9 @@
     <string name="open_al_links_in_the_app">Open AniList links in the app</string>
     <string name="account">Account</string>
     <string name="github_repository">GitHub repository</string>
+    <string name="wallpaper_telegram">4K anime wallpapers (Telegram)</string>
+    <string name="website">Website</string>
+    <string name="discord">Discord</string>
     <string name="version">Version</string>
     <string name="contributors">Contributors</string>
     <string name="anilist_account_settings">AniList account settings</string>

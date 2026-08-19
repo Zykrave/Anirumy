@@ -23,8 +23,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zykrave.anirumy.core.base.ANILIST_ACCOUNT_SETTINGS_URL
-import com.zykrave.anirumy.core.base.DISCORD_SERVER_URL
 import com.zykrave.anirumy.core.base.GITHUB_REPO_URL
+import com.zykrave.anirumy.core.base.WALLPAPER_TELEGRAM_URL
+import com.zykrave.anirumy.core.base.WEBSITE_URL
 import com.zykrave.anirumy.core.common.utils.ContextUtils.copyToClipBoard
 import com.zykrave.anirumy.core.common.utils.ContextUtils.getActivity
 import com.zykrave.anirumy.core.common.utils.ContextUtils.openActionView
@@ -380,10 +381,18 @@ private fun SettingsContent(
             )
 
             PlainPreference(
-                title = "Discord",
-                icon = R.drawable.discord_24,
+                title = stringResource(R.string.website),
+                icon = R.drawable.open_in_browser_24,
                 onClick = {
-                    context.openActionView(DISCORD_SERVER_URL)
+                    context.openActionView(WEBSITE_URL)
+                }
+            )
+
+            PlainPreference(
+                title = stringResource(R.string.wallpaper_telegram),
+                icon = R.drawable.telegram_24,
+                onClick = {
+                    context.openActionView(WALLPAPER_TELEGRAM_URL)
                 }
             )
 

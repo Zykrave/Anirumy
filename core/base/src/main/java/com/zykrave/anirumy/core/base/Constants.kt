@@ -32,9 +32,11 @@ const val YOUTUBE_VIDEO_URL = "https://www.youtube.com/watch?v="
 const val DAILYMOTION_VIDEO_URL = "https://www.dailymotion.com/video/"
 
 const val ANILIST_ACCOUNT_SETTINGS_URL = "https://anilist.co/settings/account"
-const val GITHUB_REPO_URL = "https://github.com/axiel7/AniHyou-android"
+const val GITHUB_REPO_URL = "https://github.com/Zykrave/Anirumy"
 const val GITHUB_PROFILE_URL = "https://github.com/axiel7"
 const val DISCORD_SERVER_URL = "https://discord.gg/CTv3WdfxHh"
+const val WALLPAPER_TELEGRAM_URL = "https://t.me/Pixel_Purity"
+const val WEBSITE_URL = "https://zykrave-omniverse.vercel.app/"
 const val CROWDIN_URL = "https://crowdin.com/project/anihyou"
 
 const val UNKNOWN_CHAR = "─"
