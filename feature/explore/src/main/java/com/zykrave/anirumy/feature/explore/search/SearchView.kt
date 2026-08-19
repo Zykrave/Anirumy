@@ -84,6 +84,7 @@ import com.zykrave.anirumy.core.ui.composables.media.MediaItemHorizontalPlacehol
 import com.zykrave.anirumy.core.ui.composables.person.PersonItemHorizontal
 import com.zykrave.anirumy.core.ui.composables.person.PersonItemHorizontalPlaceholder
 import com.zykrave.anirumy.core.ui.theme.AniHyouTheme
+import com.zykrave.anirumy.core.ui.theme.BOTTOM_NAV_BAR_CLEARANCE
 import com.zykrave.anirumy.feature.editmedia.EditMediaSheet
 import com.zykrave.anirumy.feature.explore.search.composables.MediaSearchCountryChip
 import com.zykrave.anirumy.feature.explore.search.composables.MediaSearchDateChip
@@ -241,10 +242,12 @@ fun SearchContentView(
                         listState.animateScrollToItem(0)
                     }
                 },
-                modifier = Modifier.animateFloatingActionButton(
-                    visible = !isAtTop,
-                    alignment = Alignment.BottomEnd,
-                )
+                modifier = Modifier
+                    .animateFloatingActionButton(
+                        visible = !isAtTop,
+                        alignment = Alignment.BottomEnd,
+                    )
+                    .padding(bottom = BOTTOM_NAV_BAR_CLEARANCE)
             ) {
                 Icon(
                     painter = painterResource(R.drawable.arrow_upward_24),

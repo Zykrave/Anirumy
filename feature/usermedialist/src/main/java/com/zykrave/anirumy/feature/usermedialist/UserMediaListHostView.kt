@@ -51,6 +51,7 @@ import com.zykrave.anirumy.core.ui.common.navigation.Route
 import com.zykrave.anirumy.core.ui.composables.DefaultScaffoldWithSmallTopAppBar
 import com.zykrave.anirumy.core.ui.composables.common.BackIconButton
 import com.zykrave.anirumy.core.ui.theme.AniHyouTheme
+import com.zykrave.anirumy.core.ui.theme.BOTTOM_NAV_BAR_CLEARANCE
 import com.zykrave.anirumy.feature.editmedia.EditMediaSheet
 import com.zykrave.anirumy.feature.editmedia.composables.SetScoreDialog
 import com.zykrave.anirumy.feature.usermedialist.composables.ListSelectSheet
@@ -149,10 +150,12 @@ private fun UserMediaListHostContent(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { showListsSheet = true },
-                modifier = Modifier.animateFloatingActionButton(
-                    visible = isFabVisible && uiState.orderedListNames.isNotEmpty(),
-                    alignment = Alignment.BottomEnd
-                )
+                modifier = Modifier
+                    .animateFloatingActionButton(
+                        visible = isFabVisible && uiState.orderedListNames.isNotEmpty(),
+                        alignment = Alignment.BottomEnd
+                    )
+                    .padding(bottom = BOTTOM_NAV_BAR_CLEARANCE)
             ) {
                 if (uiState.selectedListName == null || uiState.status != null) {
                     Icon(

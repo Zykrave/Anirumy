@@ -45,6 +45,7 @@ import com.zykrave.anirumy.core.ui.composables.common.FilterSelectionChip
 import com.zykrave.anirumy.core.ui.composables.list.OnBottomReached
 import com.zykrave.anirumy.core.ui.composables.media.MEDIA_POSTER_SMALL_WIDTH
 import com.zykrave.anirumy.core.ui.theme.AniHyouTheme
+import com.zykrave.anirumy.core.ui.theme.BOTTOM_NAV_BAR_CLEARANCE
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -106,10 +107,12 @@ private fun UserFavoritesContent(
                     )
                 },
                 text = { Text(text = stringResource(R.string.reorder)) },
-                modifier = Modifier.animateFloatingActionButton(
-                    visible = uiState.isMyProfile && isAtTop,
-                    alignment = Alignment.BottomEnd,
-                )
+                modifier = Modifier
+                    .animateFloatingActionButton(
+                        visible = uiState.isMyProfile && isAtTop,
+                        alignment = Alignment.BottomEnd,
+                    )
+                    .padding(bottom = BOTTOM_NAV_BAR_CLEARANCE)
             )
         },
         contentWindowInsets = WindowInsets(0, 0, 0, 0)

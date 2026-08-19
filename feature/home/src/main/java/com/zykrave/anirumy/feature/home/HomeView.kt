@@ -33,6 +33,7 @@ import com.zykrave.anirumy.core.ui.common.LocalNavActionManager
 import com.zykrave.anirumy.core.ui.common.rememberSnackbarManager
 import com.zykrave.anirumy.core.ui.composables.DefaultScaffoldWithSmallTopAppBar
 import com.zykrave.anirumy.core.ui.composables.IconButtonWithBadge
+import com.zykrave.anirumy.core.ui.theme.BOTTOM_NAV_BAR_CLEARANCE
 import com.zykrave.anirumy.feature.home.activity.ActivityFeedView
 import com.zykrave.anirumy.feature.home.current.CurrentView
 import com.zykrave.anirumy.feature.login.LoginView
@@ -65,7 +66,8 @@ fun HomeView(
         floatingActionButton = {
             if (selectedTabIndex == HomeTab.ACTIVITY_FEED.ordinal && isLoggedIn) {
                 FloatingActionButton(
-                    onClick = { navActionManager.toPublishNewActivity() }
+                    onClick = { navActionManager.toPublishNewActivity() },
+                    modifier = Modifier.padding(bottom = BOTTOM_NAV_BAR_CLEARANCE)
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.add_24),

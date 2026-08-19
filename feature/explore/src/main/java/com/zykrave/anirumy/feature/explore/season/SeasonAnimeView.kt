@@ -64,6 +64,7 @@ import com.zykrave.anirumy.core.ui.composables.media.MediaItemVertical
 import com.zykrave.anirumy.core.ui.composables.media.MediaItemVerticalPlaceholder
 import com.zykrave.anirumy.core.ui.composables.scores.SmallScoreIndicator
 import com.zykrave.anirumy.core.ui.theme.AniHyouTheme
+import com.zykrave.anirumy.core.ui.theme.BOTTOM_NAV_BAR_CLEARANCE
 import com.zykrave.anirumy.core.ui.utils.ComposeDateUtils.secondsToLegibleText
 import com.zykrave.anirumy.feature.editmedia.EditMediaSheet
 import com.zykrave.anirumy.feature.explore.season.composables.SeasonChartFilterSheet
@@ -134,7 +135,9 @@ private fun SeasonAnimeContent(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showFilterSheet = true },
-                modifier = Modifier.padding(WindowInsets.navigationBars.asPaddingValues())
+                modifier = Modifier
+                    .padding(WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal).asPaddingValues())
+                    .padding(bottom = BOTTOM_NAV_BAR_CLEARANCE)
             ) {
                 Icon(
                     painter = painterResource(R.drawable.filter_list_24),

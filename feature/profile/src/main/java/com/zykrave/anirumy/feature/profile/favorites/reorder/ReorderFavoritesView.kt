@@ -40,6 +40,7 @@ import com.zykrave.anirumy.core.ui.composables.common.ErrorDialogHandler
 import com.zykrave.anirumy.core.ui.composables.list.OnBottomReached
 import com.zykrave.anirumy.core.ui.composables.media.MEDIA_POSTER_SMALL_WIDTH
 import com.zykrave.anirumy.core.ui.theme.AniHyouTheme
+import com.zykrave.anirumy.core.ui.theme.BOTTOM_NAV_BAR_CLEARANCE
 import com.zykrave.anirumy.feature.profile.favorites.favoritesItems
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -115,6 +116,7 @@ private fun ReorderFavoriteContent(
                 },
                 text = { Text(text = stringResource(id = R.string.save)) },
                 expanded = isAtTop,
+                modifier = Modifier.padding(bottom = BOTTOM_NAV_BAR_CLEARANCE)
             )
         }
     ) { padding ->
