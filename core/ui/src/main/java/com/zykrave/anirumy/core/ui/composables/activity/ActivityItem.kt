@@ -1,5 +1,6 @@
 package com.zykrave.anirumy.core.ui.composables.activity
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,6 +29,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -68,88 +72,113 @@ fun ActivityItem(
     onClickLike: () -> Unit,
     onClickDelete: () -> Unit,
 ) {
-    Row(
+    Box(
         modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
+            .shadow(
+                elevation = 6.dp,
+                shape = RoundedCornerShape(16.dp),
+                ambientColor = Color.Black.copy(alpha = 0.4f),
+                spotColor = Color.Black.copy(alpha = 0.4f)
+            )
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color(0xFF1C1D2C))
             .clickable(onClick = onClick)
     ) {
-        if (type == ActivityType.MEDIA_LIST) {
-            MediaPoster(
-                url = imageUrl,
-                enableBlur = blurImage,
-                modifier = Modifier
-                    .padding(end = 16.dp)
-                    .size(ACTIVITY_IMAGE_SIZE.dp)
-                    .clickable(onClick = onClickImage),
-                showShadow = false
-            )
-        }
-
-        Column(
-            verticalArrangement = Arrangement.SpaceBetween
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color.White.copy(alpha = 0.05f),
+                            Color.White.copy(alpha = 0f)
+                        )
+                    )
+                )
+        )
+        Row(
+            modifier = Modifier.padding(12.dp)
         ) {
-            Row {
-                if (type == ActivityType.TEXT || type == ActivityType.MESSAGE) {
-                    PersonItemSmall(
-                        avatarUrl = imageUrl,
-                        username = username,
-                        modifier = Modifier.padding(bottom = 8.dp),
-                        isPrivate = isPrivate,
-                        isLocked = isLocked,
-                        onClick = onClickImage
-                    )
-                    DefaultMarkdownText(
-                        markdown = text,
-                        modifier = Modifier.weight(1f),
-                        textStyle = MaterialTheme.typography.bodyMedium,
-                    )
-                } else {
-                    Text(
-                        text = text,
-                        modifier = Modifier
-                            .padding(bottom = 4.dp)
-                            .weight(1f),
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 3,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
-                ActivityMenu(
-                    modifier = Modifier.align(Alignment.Top),
-                    onClickDelete = onClickDelete
+            if (type == ActivityType.MEDIA_LIST) {
+                MediaPoster(
+                    url = imageUrl,
+                    enableBlur = blurImage,
+                    modifier = Modifier
+                        .padding(end = 16.dp)
+                        .size(ACTIVITY_IMAGE_SIZE.dp)
+                        .clickable(onClick = onClickImage),
+                    showShadow = false
                 )
             }
 
-            Row(
-                modifier = Modifier.align(Alignment.End),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = createdAt.toLong().timestampIntervalSinceNow()
-                        .secondsToLegibleText(
-                            maxUnit = ChronoUnit.WEEKS,
-                            isFutureDate = false
-                        ),
-                    modifier = Modifier.weight(1f),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.labelMedium
-                )
-                CommentIconButton(
-                    modifier = Modifier.width(78.dp),
-                    commentCount = replyCount,
-                    onClick = onClick,
-                    fontSize = 14.sp,
-                    iconSize = 20.dp,
-                )
-                FavoriteIconButton(
-                    modifier = Modifier.width(78.dp),
-                    isFavorite = isLiked == true,
-                    favoritesCount = likeCount,
-                    onClick = onClickLike,
-                    fontSize = 14.sp,
-                    iconSize = 20.dp,
-                )
+                Row {
+                    if (type == ActivityType.TEXT || type == ActivityType.MESSAGE) {
+                        PersonItemSmall(
+                            avatarUrl = imageUrl,
+                            username = username,
+                            modifier = Modifier.padding(bottom = 8.dp),
+                            isPrivate = isPrivate,
+                            isLocked = isLocked,
+                            onClick = onClickImage
+                        )
+                        DefaultMarkdownText(
+                            markdown = text,
+                            modifier = Modifier.weight(1f),
+                            textStyle = MaterialTheme.typography.bodyMedium,
+                        )
+                    } else {
+                        Text(
+                            text = text,
+                            modifier = Modifier
+                                .padding(bottom = 4.dp)
+                                .weight(1f),
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 3,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+                    ActivityMenu(
+                        modifier = Modifier.align(Alignment.Top),
+                        onClickDelete = onClickDelete
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.align(Alignment.End),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = createdAt.toLong().timestampIntervalSinceNow()
+                            .secondsToLegibleText(
+                                maxUnit = ChronoUnit.WEEKS,
+                                isFutureDate = false
+                            ),
+                        modifier = Modifier.weight(1f),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                    CommentIconButton(
+                        modifier = Modifier.width(78.dp),
+                        commentCount = replyCount,
+                        onClick = onClick,
+                        fontSize = 14.sp,
+                        iconSize = 20.dp,
+                        tint = Color(0xFF8B5CF6)
+                    )
+                    FavoriteIconButton(
+                        modifier = Modifier.width(78.dp),
+                        isFavorite = isLiked == true,
+                        favoritesCount = likeCount,
+                        onClick = onClickLike,
+                        fontSize = 14.sp,
+                        iconSize = 20.dp,
+                        tint = Color(0xFF8B5CF6)
+                    )
+                }
             }
         }
     }
@@ -170,6 +199,7 @@ fun ActivityMenu(
             Icon(
                 painter = painterResource(R.drawable.more_vert_24),
                 contentDescription = stringResource(R.string.show_more),
+                tint = Color(0xFF8B5CF6)
             )
         }
         DropdownMenuPopup(
@@ -193,33 +223,57 @@ fun ActivityMenu(
 fun ActivityItemPlaceholder(
     modifier: Modifier = Modifier,
 ) {
-    Row(
+    Box(
         modifier = modifier
+            .shadow(
+                elevation = 6.dp,
+                shape = RoundedCornerShape(16.dp),
+                ambientColor = Color.Black.copy(alpha = 0.4f),
+                spotColor = Color.Black.copy(alpha = 0.4f)
+            )
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color(0xFF1C1D2C))
     ) {
         Box(
             modifier = Modifier
-                .clip(RoundedCornerShape(8.dp))
-                .size(ACTIVITY_IMAGE_SIZE.dp)
-                .defaultPlaceholder(visible = true)
+                .matchParentSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color.White.copy(alpha = 0.05f),
+                            Color.White.copy(alpha = 0f)
+                        )
+                    )
+                )
         )
-
-        Column(
-            modifier = Modifier
-                .padding(start = 16.dp, end = 8.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+        Row(
+            modifier = Modifier.padding(12.dp)
         ) {
-            Text(
-                text = "This is a  loading placeholder",
+            Box(
                 modifier = Modifier
-                    .padding(bottom = 8.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .size(ACTIVITY_IMAGE_SIZE.dp)
                     .defaultPlaceholder(visible = true)
             )
 
-            Text(
-                text = "Placeholder",
-                modifier = Modifier.defaultPlaceholder(visible = true),
-                fontSize = 14.sp,
-            )
+            Column(
+                modifier = Modifier
+                    .padding(start = 16.dp, end = 8.dp),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "This is a  loading placeholder",
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .defaultPlaceholder(visible = true)
+                )
+
+                Text(
+                    text = "Placeholder",
+                    modifier = Modifier.defaultPlaceholder(visible = true),
+                    fontSize = 14.sp,
+                )
+            }
         }
     }
 }

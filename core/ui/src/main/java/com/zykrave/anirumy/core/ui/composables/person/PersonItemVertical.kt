@@ -1,5 +1,6 @@
 package com.zykrave.anirumy.core.ui.composables.person
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,16 +36,32 @@ fun PersonItemVertical(
 ) {
     Column(
         modifier = modifier
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .clickable(onClick = onClick),
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .shadow(
+                elevation = 6.dp,
+                shape = RoundedCornerShape(14.dp),
+                ambientColor = Color.Black.copy(alpha = 0.4f),
+                spotColor = Color.Black.copy(alpha = 0.4f)
+            )
+            .clip(RoundedCornerShape(14.dp))
+            .background(Color(0xFF1C1D2C))
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color.White.copy(alpha = 0.05f),
+                        Color.White.copy(alpha = 0f)
+                    )
+                )
+            )
+            .clickable(onClick = onClick)
+            .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         PersonImage(
             url = imageUrl,
             modifier = Modifier
                 .size(PERSON_IMAGE_SIZE_SMALL.dp),
-            showShadow = true
+            showShadow = false
         )
 
         Text(
@@ -71,7 +91,24 @@ fun PersonItemVertical(
 fun PersonItemVerticalPlaceholder() {
     Column(
         modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .shadow(
+                elevation = 6.dp,
+                shape = RoundedCornerShape(14.dp),
+                ambientColor = Color.Black.copy(alpha = 0.4f),
+                spotColor = Color.Black.copy(alpha = 0.4f)
+            )
+            .clip(RoundedCornerShape(14.dp))
+            .background(Color(0xFF1C1D2C))
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color.White.copy(alpha = 0.05f),
+                        Color.White.copy(alpha = 0f)
+                    )
+                )
+            )
+            .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(

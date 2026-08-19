@@ -99,9 +99,10 @@ fun FavoriteIconButton(
     onClick: () -> Unit,
     fontSize: TextUnit = TextUnit.Unspecified,
     iconSize: Dp = 24.dp,
+    tint: Color = LocalContentColor.current
 ) {
-    val tint = if (isFavorite) MaterialTheme.colorScheme.primary
-    else LocalContentColor.current
+    val iconTint = if (isFavorite) MaterialTheme.colorScheme.primary
+    else tint
     TextButton(
         onClick = onClick,
         modifier = modifier,
@@ -110,7 +111,7 @@ fun FavoriteIconButton(
         if (favoritesCount > 0) {
             Text(
                 text = favoritesCount.abbreviated().orEmpty(),
-                color = tint,
+                color = iconTint,
                 fontSize = fontSize
             )
         }
@@ -123,7 +124,7 @@ fun FavoriteIconButton(
             modifier = Modifier
                 .padding(start = 8.dp)
                 .size(iconSize),
-            tint = tint
+            tint = iconTint
         )
     }
 }

@@ -1,5 +1,6 @@
 package com.zykrave.anirumy.feature.profile.activity
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -8,7 +9,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
@@ -61,12 +61,13 @@ fun UserActivityView(
         LazyColumn(
             modifier = modifier.fillMaxWidth(),
             state = listState,
-            contentPadding = PaddingValues(top = 8.dp)
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             if (uiState.isLoadingActivity) {
                 items(10) {
                     ActivityItemPlaceholder(
-                        modifier = Modifier.padding(8.dp)
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
             }
@@ -82,9 +83,7 @@ fun UserActivityView(
                         replyCount = activity.replyCount,
                         likeCount = activity.likeCount,
                         isLiked = activity.isLiked,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         blurImage = blurAdult && activity.media?.isAdult == true,
                         imageUrl = activity.media?.coverImage?.medium,
                         isLocked = activity.isLocked,
@@ -101,7 +100,6 @@ fun UserActivityView(
                             event?.deleteActivity(activity.id)
                         },
                     )
-                    HorizontalDivider(modifier = Modifier.padding(bottom = 16.dp))
                 }
                 item.onTextActivity?.textActivityFragment?.let { activity ->
                     ActivityItem(
@@ -111,9 +109,7 @@ fun UserActivityView(
                         replyCount = activity.replyCount,
                         likeCount = activity.likeCount,
                         isLiked = activity.isLiked,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         imageUrl = activity.user?.activityUser?.avatar?.medium,
                         username = activity.user?.activityUser?.name,
                         isLocked = activity.isLocked,
@@ -130,7 +126,6 @@ fun UserActivityView(
                             event?.deleteActivity(activity.id)
                         },
                     )
-                    HorizontalDivider(modifier = Modifier.padding(bottom = 16.dp))
                 }
                 item.onMessageActivity?.messageActivityFragment?.let { activity ->
                     ActivityItem(
@@ -140,9 +135,7 @@ fun UserActivityView(
                         replyCount = activity.replyCount,
                         likeCount = activity.likeCount,
                         isLiked = activity.isLiked,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         imageUrl = activity.messenger?.activityUser?.avatar?.medium,
                         username = activity.messenger?.activityUser?.name,
                         isPrivate = activity.isPrivate,
@@ -160,7 +153,6 @@ fun UserActivityView(
                             event?.deleteActivity(activity.id)
                         },
                     )
-                    HorizontalDivider(modifier = Modifier.padding(bottom = 16.dp))
                 }
             }
         }//: LazyColumn
