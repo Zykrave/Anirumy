@@ -205,7 +205,9 @@ private fun CurrentLazyGrid(
             contentType = { it }
         ) { item ->
             CurrentListItem(
-                modifier = Modifier.width(350.dp),
+                modifier = Modifier
+                    .width(350.dp)
+                    .padding(end = 12.dp),
                 item = item,
                 isPlusEnabled = isPlusEnabled,
                 onClick = { onClick(item) },
