@@ -18,8 +18,12 @@ import com.zykrave.anirumy.core.common.utils.ContextUtils.openActionView
 import com.zykrave.anirumy.core.ui.common.LocalNavActionManager
 import com.zykrave.anirumy.core.ui.composables.DefaultScaffoldWithSmallTopAppBar
 import com.zykrave.anirumy.core.ui.composables.PlainPreference
+import com.zykrave.anirumy.core.ui.composables.PreferencesTitle
 import com.zykrave.anirumy.core.ui.composables.common.BackIconButton
 import com.zykrave.anirumy.core.ui.theme.AniHyouTheme
+
+private const val maintainerName = "Zykrave"
+private const val maintainerLink = "https://github.com/Zykrave"
 
 private val contributors = mapOf(
     "axiel7" to "https://github.com/axiel7",
@@ -51,6 +55,15 @@ fun ContributorsView() {
                 .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
                 .verticalScroll(rememberScrollState())
         ) {
+            PreferencesTitle(text = stringResource(R.string.maintainer))
+
+            PlainPreference(
+                title = maintainerName,
+                onClick = { context.openActionView(maintainerLink) }
+            )
+
+            PreferencesTitle(text = stringResource(R.string.original_contributors))
+
             contributors.forEach { (name, link) ->
                 PlainPreference(
                     title = name,
