@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import com.zykrave.anirumy.core.common.utils.ContextUtils.openActionView
@@ -19,11 +20,12 @@ fun HtmlWebView(
     html: String,
     modifier: Modifier = Modifier,
     hardwareEnabled: Boolean = true,
+    backgroundColor: Color? = null,
 ) {
     val context = LocalContext.current
     val colorScheme = MaterialTheme.colorScheme
-    val htmlConverted = remember(html) {
-        generateHtml(html, colorScheme)
+    val htmlConverted = remember(html, backgroundColor) {
+        generateHtml(html, colorScheme, backgroundColor)
     }
     val webClient = remember {
         object : WebViewClient() {
@@ -54,13 +56,14 @@ fun HtmlWebView(
 
 fun generateHtml(
     html: String,
-    colorScheme: ColorScheme
+    colorScheme: ColorScheme,
+    backgroundColorOverride: Color? = null
 ) = """
     <HTML>
     <head>
         <meta name='viewport' content='width=device-width, shrink-to-fit=YES'>
     </head>
-    ${generateCSS(colorScheme)}
+    ${generateCSS(colorScheme, backgroundColorOverride)}
     <BODY>
     <div id="anirumy">${formatCompatibleHtml(html)}</div>
     </BODY>
@@ -88,12 +91,13 @@ fun formatCompatibleHtml(html: String): String {
         .replace("&gt;", ">")
 }
 
-fun generateCSS(colorScheme: ColorScheme): String {
+fun generateCSS(colorScheme: ColorScheme, backgroundColorOverride: Color? = null): String {
+    val backgroundColor = backgroundColorOverride ?: colorScheme.background
     return """
     <style type='text/css'>
         ${
         baseCss(
-            backgroundColor = colorScheme.background.toArgb().hexToString(),
+            backgroundColor = backgroundColor.toArgb().hexToString(),
             fontColor = colorScheme.onBackground.toArgb().hexToString(),
             linkColor = colorScheme.primary.toArgb().hexToString()
         )
