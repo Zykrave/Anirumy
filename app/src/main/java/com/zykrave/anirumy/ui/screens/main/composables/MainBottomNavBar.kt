@@ -82,7 +82,7 @@ fun MainBottomNavBar(
                     .width(itemWidth - 24.dp)
                     .height(36.dp)
                     .clip(RoundedCornerShape(14.dp))
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.22f))
+                    .background(MaterialTheme.colorScheme.primary)
             )
 
             NavigationBar(
@@ -120,8 +120,8 @@ fun MainBottomNavBar(
                             )
                         },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = MaterialTheme.colorScheme.primary,
-                            selectedTextColor = MaterialTheme.colorScheme.primary,
+                            selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                            selectedTextColor = MaterialTheme.colorScheme.onPrimary,
                             indicatorColor = Color.Transparent,
                             unselectedIconColor = Color.White.copy(alpha = 0.6f),
                             unselectedTextColor = Color.White.copy(alpha = 0.6f),
