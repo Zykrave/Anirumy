@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -119,6 +120,7 @@ fun MediaItemVertical(
                     )
                 )
             ),
+        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
         onLongClick = onLongClick,
         supportingContent = subtitle,
         contentPadding = PaddingValues(8.dp)
