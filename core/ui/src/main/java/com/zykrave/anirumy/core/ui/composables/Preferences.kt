@@ -36,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
@@ -79,8 +80,11 @@ fun PlainPreference(
 ) {
     Row(
         modifier = modifier
-            .fillMaxWidth()
-            .clickable(enabled = enabled, onClick = onClick),
+            .padding(horizontal = 12.dp, vertical = 4.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color(0xFF1C1D2C))
+            .clickable(enabled = enabled, onClick = onClick)
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -154,10 +158,13 @@ fun SwitchPreference(
 ) {
     Row(
         modifier = modifier
-            .fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 4.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color(0xFF1C1D2C))
             .clickable {
                 onValueChange(preferenceValue?.not() ?: false)
-            },
+            }
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -237,8 +244,11 @@ fun <T> ListPreference(
     var openDialog by remember { mutableStateOf(false) }
     Row(
         modifier = modifier
-            .fillMaxWidth()
-            .clickable { openDialog = true },
+            .padding(horizontal = 12.dp, vertical = 4.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color(0xFF1C1D2C))
+            .clickable { openDialog = true }
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {

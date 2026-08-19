@@ -5,6 +5,8 @@ import android.Manifest
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -132,13 +134,63 @@ private fun SettingsContent(
         ) {
             PreferencesTitle(text = stringResource(R.string.display))
 
-            ListPreference(
-                title = stringResource(R.string.theme),
-                entriesValues = Theme.entriesLocalized,
-                preferenceValue = uiState.theme,
-                icon = R.drawable.palette_24,
-                onValueChange = { event?.setTheme(it) }
-            )
+            Row(modifier = Modifier.fillMaxWidth()) {
+                ListPreference(
+                    title = stringResource(R.string.theme),
+                    entriesValues = Theme.entriesLocalized,
+                    preferenceValue = uiState.theme,
+                    icon = R.drawable.palette_24,
+                    onValueChange = { event?.setTheme(it) },
+                    modifier = Modifier.weight(1f)
+                )
+
+                ListPreference(
+                    title = stringResource(R.string.color),
+                    entriesValues = AppColorMode.entriesLocalized,
+                    preferenceValue = uiState.appColorMode,
+                    icon = R.drawable.colors_24,
+                    onValueChange = { event?.setAppColorMode(it) },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            Row(modifier = Modifier.fillMaxWidth()) {
+                ListPreference(
+                    title = stringResource(R.string.color_palette),
+                    values = PaletteStyle.entries.map { it.name },
+                    preferenceValue = uiState.colorPaletteStyle,
+                    icon = R.drawable.format_paint_24,
+                    onValueChange = { event?.setColorPalette(it) },
+                    modifier = Modifier.weight(1f)
+                )
+
+                LanguagePreference(modifier = Modifier.weight(1f))
+            }
+
+            if (uiState.isLoggedIn) {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    ListPreference(
+                        title = stringResource(R.string.title_language),
+                        entriesValues = UserTitleLanguage.entriesLocalized,
+                        preferenceValue = uiState.userSettings?.options?.titleLanguage,
+                        icon = R.drawable.title_24,
+                        onValueChange = { value ->
+                            event?.setTitleLanguage(value)
+                            snackbarManager.showMessage(R.string.changes_will_take_effect_on_app_restart)
+                        },
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    ListPreference(
+                        title = stringResource(R.string.score_format),
+                        entriesValues = ScoreFormat.entriesLocalized,
+                        preferenceValue = uiState.scoreFormat,
+                        icon = R.drawable.star_24,
+                        onValueChange = { event?.setScoreFormat(it) },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
 
             if (isDarkTheme) {
                 SwitchPreference(
@@ -148,29 +200,12 @@ private fun SettingsContent(
                 )
             }
 
-            ListPreference(
-                title = stringResource(R.string.color),
-                entriesValues = AppColorMode.entriesLocalized,
-                preferenceValue = uiState.appColorMode,
-                icon = R.drawable.colors_24,
-                onValueChange = { event?.setAppColorMode(it) }
-            )
             if (uiState.appColorMode == AppColorMode.CUSTOM) {
                 CustomColorPreference(
                     color = uiState.appColor,
                     onColorChanged = { event?.setCustomAppColor(it) }
                 )
             }
-
-            ListPreference(
-                title = stringResource(R.string.color_palette),
-                values = PaletteStyle.entries.map { it.name },
-                preferenceValue = uiState.colorPaletteStyle,
-                icon = R.drawable.format_paint_24,
-                onValueChange = { event?.setColorPalette(it) }
-            )
-
-            LanguagePreference()
 
             if (!isEnglishLocale) {
                 ListPreference(
@@ -186,17 +221,6 @@ private fun SettingsContent(
 
             if (uiState.isLoggedIn) {
                 ListPreference(
-                    title = stringResource(R.string.title_language),
-                    entriesValues = UserTitleLanguage.entriesLocalized,
-                    preferenceValue = uiState.userSettings?.options?.titleLanguage,
-                    icon = R.drawable.title_24,
-                    onValueChange = { value ->
-                        event?.setTitleLanguage(value)
-                        snackbarManager.showMessage(R.string.changes_will_take_effect_on_app_restart)
-                    }
-                )
-
-                ListPreference(
                     title = stringResource(R.string.staff_character_name_language),
                     entriesValues = UserStaffNameLanguage.entriesLocalized,
                     preferenceValue = uiState.userSettings?.options?.staffNameLanguage,
@@ -207,14 +231,6 @@ private fun SettingsContent(
                     }
                 )
 
-
-                ListPreference(
-                    title = stringResource(R.string.score_format),
-                    entriesValues = ScoreFormat.entriesLocalized,
-                    preferenceValue = uiState.scoreFormat,
-                    icon = R.drawable.star_24,
-                    onValueChange = { event?.setScoreFormat(it) }
-                )
                 if (uiState.scoreFormat == ScoreFormat.POINT_10_DECIMAL ||
                     uiState.scoreFormat == ScoreFormat.POINT_10 ||
                     uiState.scoreFormat == ScoreFormat.POINT_100
@@ -226,7 +242,6 @@ private fun SettingsContent(
                         initialValue = uiState.scoreStep
                     )
                 }
-
 
                 ListPreference(
                     title = stringResource(R.string.default_tab),
