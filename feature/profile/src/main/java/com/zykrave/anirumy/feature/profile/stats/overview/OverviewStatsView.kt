@@ -1,17 +1,34 @@
 package com.zykrave.anirumy.feature.profile.stats.overview
 import com.zykrave.anirumy.core.common.utils.NumberUtils.format
 
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.zykrave.anirumy.core.model.genre.SelectableGenre.Companion.genreTagLocalized
+import com.zykrave.anirumy.core.ui.composables.defaultPlaceholder
 import com.zykrave.anirumy.core.model.point100PrimaryColor
 import com.zykrave.anirumy.core.model.point10PrimaryColor
 import com.zykrave.anirumy.core.model.point5PrimaryColor
@@ -51,55 +68,156 @@ fun OverviewStatsView(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .padding(horizontal = 16.dp, vertical = 4.dp)
         ) {
-            TextSubtitleVertical(
-                text = stats?.count?.format(),
-                subtitle = stringResource(R.string.total),
-                modifier = Modifier.weight(1f),
-                isLoading = uiState.isLoading
-            )
-            TextSubtitleVertical(
-                text = stats?.episodeOrChapterCount?.format(),
-                subtitle = if (isAnime) stringResource(R.string.episodes_watched)
-                else stringResource(R.string.chapters_read),
-                modifier = Modifier.weight(1f),
-                isLoading = uiState.isLoading
-            )
-            TextSubtitleVertical(
-                text = stats?.daysOrVolumes?.format(),
-                subtitle = if (isAnime) stringResource(R.string.days_watched)
-                else stringResource(R.string.volumes_read),
-                modifier = Modifier.weight(1f),
-                isLoading = uiState.isLoading
-            )
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(4.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color(0xFF1C1D2C))
+                    .padding(vertical = 12.dp)
+            ) {
+                TextSubtitleVertical(
+                    text = stats?.count?.format(),
+                    subtitle = stringResource(R.string.total),
+                    modifier = Modifier.fillMaxWidth(),
+                    isLoading = uiState.isLoading
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(4.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color(0xFF1C1D2C))
+                    .padding(vertical = 12.dp)
+            ) {
+                TextSubtitleVertical(
+                    text = stats?.episodeOrChapterCount?.format(),
+                    subtitle = if (isAnime) stringResource(R.string.episodes_watched)
+                    else stringResource(R.string.chapters_read),
+                    modifier = Modifier.fillMaxWidth(),
+                    isLoading = uiState.isLoading
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(4.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color(0xFF1C1D2C))
+                    .padding(vertical = 12.dp)
+            ) {
+                TextSubtitleVertical(
+                    text = stats?.daysOrVolumes?.format(),
+                    subtitle = if (isAnime) stringResource(R.string.days_watched)
+                    else stringResource(R.string.volumes_read),
+                    modifier = Modifier.fillMaxWidth(),
+                    isLoading = uiState.isLoading
+                )
+            }
         }//: Row
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .padding(horizontal = 16.dp, vertical = 4.dp)
         ) {
-            TextSubtitleVertical(
-                text = stats?.plannedCount?.format(),
-                subtitle = if (isAnime) stringResource(R.string.days_planned)
-                else stringResource(R.string.chapters_planned),
-                modifier = Modifier.weight(1f),
-                isLoading = uiState.isLoading
-            )
-            TextSubtitleVertical(
-                text = stats?.meanScore?.format(),
-                subtitle = stringResource(R.string.mean_score),
-                modifier = Modifier.weight(1f),
-                isLoading = uiState.isLoading
-            )
-            TextSubtitleVertical(
-                text = stats?.standardDeviation?.format(),
-                subtitle = stringResource(R.string.standard_deviation),
-                modifier = Modifier.weight(1f),
-                isLoading = uiState.isLoading
-            )
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(4.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color(0xFF1C1D2C))
+                    .padding(vertical = 12.dp)
+            ) {
+                TextSubtitleVertical(
+                    text = stats?.plannedCount?.format(),
+                    subtitle = if (isAnime) stringResource(R.string.days_planned)
+                    else stringResource(R.string.chapters_planned),
+                    modifier = Modifier.fillMaxWidth(),
+                    isLoading = uiState.isLoading
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(4.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color(0xFF1C1D2C))
+                    .padding(vertical = 12.dp)
+            ) {
+                TextSubtitleVertical(
+                    text = stats?.meanScore?.format(),
+                    subtitle = stringResource(R.string.mean_score),
+                    modifier = Modifier.fillMaxWidth(),
+                    isLoading = uiState.isLoading
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(4.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color(0xFF1C1D2C))
+                    .padding(vertical = 12.dp)
+            ) {
+                TextSubtitleVertical(
+                    text = stats?.standardDeviation?.format(),
+                    subtitle = stringResource(R.string.standard_deviation),
+                    modifier = Modifier.fillMaxWidth(),
+                    isLoading = uiState.isLoading
+                )
+            }
         }//: Row
+
+        // Genre distribution donut chart
+        val genreStats = if (isAnime) uiState.animeGenres else uiState.mangaGenres
+        val sortedGenres = genreStats.orEmpty().sortedByDescending { it.count }
+        val topGenres = sortedGenres.take(5)
+        val otherCount = sortedGenres.drop(5).sumOf { it.count }
+
+        val segmentColors = listOf(
+            Color(0xFF8B5CF6), // purple
+            Color(0xFF4FD1C5), // teal
+            Color(0xFFF472B6), // pink
+            Color(0xFF60A5FA), // blue
+            Color(0xFFFBBF24), // amber
+            Color(0xFF6B7280)  // gray
+        )
+
+        val donutSegments = topGenres.mapIndexed { index, stat ->
+            DonutSegment(
+                name = stat.genre?.genreTagLocalized() ?: stringResource(R.string.unknown),
+                value = stat.count,
+                color = segmentColors[index % (segmentColors.size - 1)]
+            )
+        }.toMutableList()
+
+        if (otherCount > 0) {
+            donutSegments.add(
+                DonutSegment(
+                    name = stringResource(R.string.other),
+                    value = otherCount,
+                    color = segmentColors.last()
+                )
+            )
+        }
+
+        InfoTitle(text = stringResource(R.string.genres))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color(0xFF1C1D2C))
+        ) {
+            GenreDonutChart(
+                donutSegments = donutSegments,
+                isLoading = uiState.isLoading
+            )
+        }
 
         // Score stats
         InfoTitle(text = stringResource(R.string.score))
@@ -218,6 +336,112 @@ fun OverviewStatsView(
         )
     }//: Column
 }
+
+@Composable
+private fun GenreDonutChart(
+    donutSegments: List<DonutSegment>,
+    isLoading: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val totalCount = donutSegments.sumOf { it.value }.toFloat()
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .defaultPlaceholder(visible = isLoading),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(24.dp)
+    ) {
+        if (donutSegments.isNotEmpty() || isLoading) {
+            Canvas(modifier = Modifier.size(100.dp)) {
+                var startAngle = -90f
+                if (isLoading) {
+                    drawArc(
+                        color = Color.Gray.copy(alpha = 0.2f),
+                        startAngle = 0f,
+                        sweepAngle = 360f,
+                        useCenter = false,
+                        style = Stroke(width = 16.dp.toPx(), cap = StrokeCap.Butt)
+                    )
+                } else {
+                    donutSegments.forEach { segment ->
+                        val sweepAngle = if (totalCount > 0) (segment.value / totalCount) * 360f else 0f
+                        drawArc(
+                            color = segment.color,
+                            startAngle = startAngle,
+                            sweepAngle = sweepAngle,
+                            useCenter = false,
+                            style = Stroke(width = 16.dp.toPx(), cap = StrokeCap.Butt)
+                        )
+                        startAngle += sweepAngle
+                    }
+                }
+            }
+
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                if (isLoading) {
+                    repeat(5) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(8.dp)
+                                    .clip(CircleShape)
+                                    .background(Color.Gray.copy(alpha = 0.2f))
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(vertical = 4.dp)
+                                    .defaultPlaceholder(visible = true)
+                            )
+                        }
+                    }
+                } else {
+                    donutSegments.forEach { segment ->
+                        val percentage =
+                            if (totalCount > 0) (segment.value / totalCount * 100).toInt() else 0
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(8.dp)
+                                    .clip(CircleShape)
+                                    .background(segment.color)
+                            )
+                            Text(
+                                text = segment.name,
+                                style = MaterialTheme.typography.labelMedium,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Text(
+                                text = "$percentage%",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+private data class DonutSegment(
+    val name: String,
+    val value: Int,
+    val color: Color
+)
 
 @Preview
 @Composable
