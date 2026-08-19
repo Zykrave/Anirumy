@@ -59,6 +59,7 @@ import com.zykrave.anirumy.core.ui.common.navigation.NavActionManager
 import com.zykrave.anirumy.core.ui.common.navigation.Navigator
 import com.zykrave.anirumy.core.ui.common.navigation.rememberNavigationState
 import com.zykrave.anirumy.core.ui.theme.AniHyouTheme
+import com.zykrave.anirumy.core.ui.composables.SakuraPetalsOverlay
 import com.zykrave.anirumy.ui.screens.main.composables.MainBottomNavBar
 import com.zykrave.anirumy.ui.screens.main.composables.MainNavigationRail
 import kotlinx.coroutines.runBlocking
@@ -132,23 +133,30 @@ class MainActivity : AppCompatActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    CompositionLocalProvider(
-                        LocalBlurAdult provides blurAdultContent,
-                        LocalScoreFormat provides scoreFormat,
-                        LocalHideScores provides hideScores,
-                    ) {
-                        MainView(
-                            windowSizeClass = windowSizeClass,
-                            isLoggedIn = isLoggedIn,
-                            tabToOpen = startTab,
-                            event = viewModel,
-                            homeTab = homeTab,
-                            deepLink = deepLink,
-                            setNavigationBarContrastEnforced = {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                    window.isNavigationBarContrastEnforced = it
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        CompositionLocalProvider(
+                            LocalBlurAdult provides blurAdultContent,
+                            LocalScoreFormat provides scoreFormat,
+                            LocalHideScores provides hideScores,
+                        ) {
+                            MainView(
+                                windowSizeClass = windowSizeClass,
+                                isLoggedIn = isLoggedIn,
+                                tabToOpen = startTab,
+                                event = viewModel,
+                                homeTab = homeTab,
+                                deepLink = deepLink,
+                                setNavigationBarContrastEnforced = {
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                        window.isNavigationBarContrastEnforced = it
+                                    }
                                 }
-                            }
+                            )
+                        }
+                        SakuraPetalsOverlay(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .align(Alignment.TopStart)
                         )
                     }
                 }
