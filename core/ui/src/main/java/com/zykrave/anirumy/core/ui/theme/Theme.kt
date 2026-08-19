@@ -21,7 +21,7 @@ import com.materialkolor.dynamiccolor.ColorSpec
 @Composable
 fun AniHyouTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     blackColors: Boolean = false,
     appColor: Color? = null,
     appColorMode: AppColorMode = AppColorMode.DEFAULT,
