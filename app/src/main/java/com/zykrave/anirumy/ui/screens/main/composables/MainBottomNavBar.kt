@@ -91,14 +91,14 @@ fun MainBottomNavBar(
                     .hazeBlur(
                         input = HazeInput.Sources(hazeState),
                         style = HazeBlurStyle {
-                            backgroundColor(Color(0xFF1A1B2E).copy(alpha = 0.5f))
+                            backgroundColor(Color(0xFF0E0F1A).copy(alpha = 0.72f))
                             blurRadius(20.dp)
-                            noiseFactor(0.05f)
+                            noiseFactor(0.03f)
                         }
                     )
                     .border(
                         width = 1.dp,
-                        color = Color.White.copy(alpha = 0.12f),
+                        color = Color.White.copy(alpha = 0.08f),
                         shape = RoundedCornerShape(20.dp)
                     ),
                 containerColor = Color.Transparent
