@@ -14,6 +14,13 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.foundation.background
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -73,6 +80,24 @@ fun StandardUserMediaListItem(
     val priority = item.basicMediaListEntry.priority
     ListItem(
         onClick = onClick,
+        modifier = Modifier
+            .shadow(
+                elevation = 6.dp,
+                shape = RoundedCornerShape(14.dp),
+                ambientColor = Color.Black.copy(alpha = 0.4f),
+                spotColor = Color.Black.copy(alpha = 0.4f)
+            )
+            .clip(RoundedCornerShape(14.dp))
+            .background(Color(0xFF1C1D2C))
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color.White.copy(alpha = 0.05f),
+                        Color.White.copy(alpha = 0f)
+                    )
+                )
+            ),
+        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
         onLongClick = onLongClick,
         leadingContent = {
             Box {
