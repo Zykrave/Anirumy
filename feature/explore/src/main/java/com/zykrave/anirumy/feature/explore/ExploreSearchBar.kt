@@ -1,8 +1,10 @@
 package com.zykrave.anirumy.feature.explore
 import com.zykrave.anirumy.core.resources.R
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.AppBarWithSearch
@@ -12,6 +14,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SearchBarValue
 import androidx.compose.material3.Surface
@@ -26,10 +29,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zykrave.anirumy.core.model.SearchType
 import com.zykrave.anirumy.core.network.type.MediaSort
@@ -112,13 +117,15 @@ private fun ExploreSearchBarContent(
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.arrow_back_24),
-                                contentDescription = stringResource(R.string.action_back)
+                                contentDescription = stringResource(R.string.action_back),
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
                     } else {
                         Icon(
                             painter = painterResource(R.drawable.search_24),
-                            contentDescription = stringResource(R.string.search)
+                            contentDescription = stringResource(R.string.search),
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 },
@@ -133,7 +140,8 @@ private fun ExploreSearchBarContent(
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.close_24),
-                                contentDescription = stringResource(R.string.delete)
+                                contentDescription = stringResource(R.string.delete),
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
                     }
@@ -146,6 +154,13 @@ private fun ExploreSearchBarContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AppBarWithSearch(
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .border(
+                    width = 1.dp,
+                    color = Color(0xFF8B5CF6).copy(alpha = 0.5f),
+                    shape = SearchBarDefaults.inputFieldShape
+                ),
             scrollBehavior = scrollBehavior,
             state = searchBarState,
             colors = appBarWithSearchColors,

@@ -53,6 +53,7 @@ fun FilterSelectionChip(
                     painter = painterResource(R.drawable.check_20),
                     contentDescription = "check",
                     modifier = Modifier.size(FilterChipDefaults.IconSize),
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         }
@@ -87,6 +88,7 @@ fun TriFilterChip(
                     painter = painterResource(R.drawable.check_20),
                     contentDescription = "check",
                     modifier = Modifier.size(FilterChipDefaults.IconSize),
+                    tint = MaterialTheme.colorScheme.primary
                 )
             } else if (value == false) {
                 Icon(

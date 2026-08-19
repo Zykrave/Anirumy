@@ -171,7 +171,8 @@ private fun DiscoverContent(
                         modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
                         style = MaterialTheme.typography.titleMedium,
                         fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.primary
                     )
 
                     Row(
@@ -189,6 +190,7 @@ private fun DiscoverContent(
                                     painter = painterResource(uiState.currentSeason.season.iconSmall()),
                                     contentDescription = null,
                                     modifier = Modifier.size(AssistChipDefaults.IconSize),
+                                    tint = MaterialTheme.colorScheme.primary
                                 )
                             }
                         )
@@ -199,7 +201,8 @@ private fun DiscoverContent(
                             leadingIcon = {
                                 Icon(
                                     painter = painterResource(R.drawable.calendar_month_20),
-                                    contentDescription = null
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary
                                 )
                             }
                         )
@@ -211,7 +214,8 @@ private fun DiscoverContent(
                                 leadingIcon = {
                                     Icon(
                                         painter = painterResource(chartType.icon()),
-                                        contentDescription = null
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary
                                     )
                                 }
                             )
@@ -224,7 +228,8 @@ private fun DiscoverContent(
                         modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
                         style = MaterialTheme.typography.titleMedium,
                         fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.primary
                     )
                     Row(
                         modifier = Modifier
@@ -238,7 +243,8 @@ private fun DiscoverContent(
                                 leadingIcon = {
                                     Icon(
                                         painter = painterResource(chartType.icon()),
-                                        contentDescription = null
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary
                                     )
                                 }
                             )

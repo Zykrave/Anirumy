@@ -50,7 +50,8 @@ fun BackIconButton(
     ) {
         Icon(
             painter = painterResource(R.drawable.arrow_back_24),
-            contentDescription = stringResource(R.string.action_back)
+            contentDescription = stringResource(R.string.action_back),
+            tint = MaterialTheme.colorScheme.primary
         )
     }
 }
