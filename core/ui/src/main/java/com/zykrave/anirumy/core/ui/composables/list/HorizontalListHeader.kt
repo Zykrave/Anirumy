@@ -37,7 +37,8 @@ fun HorizontalListHeader(
                 text = text,
                 fontWeight = FontWeight.Medium,
                 fontSize = 18.sp,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
             )
             if (onClick != null) {
                 Icon(

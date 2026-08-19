@@ -11,6 +11,7 @@ import androidx.compose.material3.Badge
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
@@ -90,7 +91,8 @@ fun HomeView(
                             }
                         }
                     },
-                    onClick = { navActionManager.toNotifications(unreadNotificationCount) }
+                    onClick = { navActionManager.toNotifications(unreadNotificationCount) },
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         },
