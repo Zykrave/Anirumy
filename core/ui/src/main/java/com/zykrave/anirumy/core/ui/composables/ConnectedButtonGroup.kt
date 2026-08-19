@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
@@ -18,6 +19,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -48,6 +50,12 @@ fun <T> ConnectedButtonGroup(
                 modifier = Modifier
                     .weight(1f)
                     .semantics { role = Role.RadioButton },
+                colors = ToggleButtonDefaults.toggleButtonColors(
+                    containerColor = Color(0xFF1C1D2C),
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    checkedContainerColor = Color(0xFF8B5CF6),
+                    checkedContentColor = Color.White
+                ),
                 shapes = when (index) {
                     0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
                     items.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
