@@ -113,7 +113,7 @@ fun StandardUserMediaListItem(
     ) {
         Column(
             modifier = Modifier.heightIn(min = MEDIA_POSTER_SMALL_HEIGHT.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.Center
         ) {
             Column {
                 Text(
