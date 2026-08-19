@@ -31,9 +31,15 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import androidx.compose.ui.graphics.toArgb
@@ -227,11 +233,28 @@ fun MainView(
     val isBottomDestination by remember {
         derivedStateOf { navigationState.getCurrentRoute()?.isBottomDestination() == true }
     }
+    var isNavBarVisible by remember { mutableStateOf(true) }
+    val nestedScrollConnection = remember {
+        object : NestedScrollConnection {
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                if (available.y < -10f) {
+                    isNavBarVisible = false
+                } else if (available.y > 10f) {
+                    isNavBarVisible = true
+                }
+                return Offset.Zero
+            }
+        }
+    }
     val navActionManager = remember { NavActionManager(navigator) }
     val isCompactScreen = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
 
     LaunchedEffect(isBottomDestination) {
         setNavigationBarContrastEnforced(!isBottomDestination)
+    }
+
+    LaunchedEffect(navigator.state.topLevelRoute) {
+        isNavBarVisible = true
     }
 
     CompositionLocalProvider(LocalNavActionManager provides navActionManager) {
@@ -242,7 +265,11 @@ fun MainView(
             else WindowInsets(0, 0, 0, 0)
         ) { padding ->
             if (isCompactScreen) {
-                Box(modifier = Modifier.fillMaxSize()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .nestedScroll(nestedScrollConnection)
+                ) {
                     MainNavigation(
                         navigator = navigator,
                         isCompactScreen = true,
@@ -255,7 +282,7 @@ fun MainView(
                     Box(modifier = Modifier.align(Alignment.BottomCenter)) {
                         MainBottomNavBar(
                             currentTopRoute = navigator.state.topLevelRoute,
-                            isVisible = isBottomDestination,
+                            isVisible = isBottomDestination && isNavBarVisible,
                             onItemSelected = { event?.saveLastTab(it) },
                             hazeState = hazeState
                         )
