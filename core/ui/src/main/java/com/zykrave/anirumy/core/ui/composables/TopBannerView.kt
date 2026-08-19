@@ -2,6 +2,7 @@ package com.zykrave.anirumy.core.ui.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,7 +20,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.zykrave.anirumy.core.resources.banner_shadow_color
 import com.zykrave.anirumy.core.ui.theme.AniHyouTheme
 
 @Composable
@@ -34,7 +34,7 @@ fun TopBannerView(
             .fillMaxWidth()
             .height(height)
             .padding(bottom = 16.dp),
-        contentAlignment = Alignment.TopStart
+        contentAlignment = Alignment.Center
     ) {
         if (imageUrl != null) {
             AsyncImage(
@@ -53,13 +53,34 @@ fun TopBannerView(
                     .fillMaxSize()
             )
         }
-        //top shadow
+        
+        // Layer 1 (contrast/readability): vertical gradient scrim
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
-                        listOf(banner_shadow_color, MaterialTheme.colorScheme.surface)
+                        listOf(
+                            Color.Black.copy(alpha = 0.45f),
+                            Color.Black.copy(alpha = 0.05f),
+                            MaterialTheme.colorScheme.surface
+                        )
+                    )
+                )
+        )
+
+        // Layer 2 (glass sheen): top ~40% glass sheen hint
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.4f)
+                .align(Alignment.TopCenter)
+                .background(
+                    Brush.verticalGradient(
+                        listOf(
+                            Color.White.copy(alpha = 0.05f),
+                            Color.White.copy(alpha = 0f)
+                        )
                     )
                 )
         )
