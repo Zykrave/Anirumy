@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -316,6 +317,10 @@ private fun MainProfileInfo(
                     OutlinedButton(
                         onClick = { scope.launch { event?.toggleFollow() } },
                         modifier = Modifier.padding(horizontal = 16.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = Color(0xFF8B5CF6)
+                        ),
+                        border = BorderStroke(1.dp, Color(0xFF8B5CF6))
                     ) {
                         Text(text = stringResource(R.string.following))
                     }
@@ -323,6 +328,10 @@ private fun MainProfileInfo(
                     Button(
                         onClick = { scope.launch { event?.toggleFollow() } },
                         modifier = Modifier.padding(horizontal = 16.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF8B5CF6),
+                            contentColor = Color.White
+                        )
                     ) {
                         Text(text = stringResource(R.string.follow))
                     }
