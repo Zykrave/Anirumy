@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -59,7 +58,7 @@ fun PreferencesTitle(text: String) {
         text = text,
         modifier = Modifier
             .padding(start = 72.dp, top = 16.dp, end = 16.dp, bottom = 8.dp),
-        color = MaterialTheme.colorScheme.secondary,
+        color = MaterialTheme.colorScheme.primary,
         fontSize = 13.sp,
         fontWeight = FontWeight.SemiBold
     )
@@ -111,10 +110,14 @@ fun PlainPreference(
                     )
                 }
             } else {
-                Spacer(
+                Box(
                     modifier = Modifier
                         .padding(iconPadding)
                         .size(40.dp)
+                        .background(
+                            color = Color(0xFF2A2B3D),
+                            shape = RoundedCornerShape(12.dp)
+                        )
                 )
             }
 
@@ -192,10 +195,14 @@ fun SwitchPreference(
                     )
                 }
             } else {
-                Spacer(
+                Box(
                     modifier = Modifier
                         .padding(iconPadding)
                         .size(40.dp)
+                        .background(
+                            color = Color(0xFF2A2B3D),
+                            shape = RoundedCornerShape(12.dp)
+                        )
                 )
             }
 
@@ -271,10 +278,14 @@ fun <T> ListPreference(
                 )
             }
         } else {
-            Spacer(
+            Box(
                 modifier = Modifier
                     .padding(8.dp)
                     .size(40.dp)
+                    .background(
+                        color = Color(0xFF2A2B3D),
+                        shape = RoundedCornerShape(12.dp)
+                    )
             )
         }
 

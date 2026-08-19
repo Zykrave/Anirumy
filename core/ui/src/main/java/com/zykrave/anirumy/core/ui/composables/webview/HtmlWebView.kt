@@ -61,6 +61,7 @@ fun generateHtml(
 ) = """
     <HTML>
     <head>
+        <meta charset="UTF-8">
         <meta name='viewport' content='width=device-width, shrink-to-fit=YES'>
     </head>
     ${generateCSS(colorScheme, backgroundColorOverride)}
@@ -116,7 +117,7 @@ fun baseCss(
     linkColor: String
 ) = """
     body {background-color: $backgroundColor;}
-    h1, h2, h3, h4, h5, h6, p, div, dl, ol, ul, pre, blockquote {line-height: 170%; font-family: 'Arial' !important; color: $fontColor; }
+    h1, h2, h3, h4, h5, h6, p, div, dl, ol, ul, pre, blockquote {line-height: 170%; font-family: -apple-system, 'Roboto', sans-serif !important; color: $fontColor; }
     iframe{width:100%; height:250px;}
     img {max-width:100%;}
     a:link {color: $linkColor;}

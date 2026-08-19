@@ -309,7 +309,7 @@ private fun MainProfileInfo(
                     Icon(
                         painter = painterResource(R.drawable.settings_24),
                         contentDescription = stringResource(R.string.settings),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
             } else {
