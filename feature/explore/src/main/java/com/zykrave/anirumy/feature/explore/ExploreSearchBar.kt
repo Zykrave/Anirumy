@@ -2,10 +2,15 @@ package com.zykrave.anirumy.feature.explore
 import com.zykrave.anirumy.core.resources.R
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.AppBarWithSearch
@@ -86,6 +91,7 @@ private fun ExploreSearchBarContent(
     val scrollBehavior = SearchBarDefaults.enterAlwaysSearchBarScrollBehavior()
     val appBarWithSearchColors =
         SearchBarDefaults.appBarWithSearchColors(
+            appBarContainerColor = Color.Transparent,
             searchBarColors = SearchBarDefaults.colors(
                 containerColor = Color.Transparent
             )
@@ -107,7 +113,12 @@ private fun ExploreSearchBarContent(
                     performSearch.value = true
                     keyboardController?.hide()
                 },
-                placeholder = { Text(text = stringResource(R.string.anime_manga_and_more)) },
+                placeholder = {
+                    Text(
+                        text = stringResource(R.string.anime_manga_and_more),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                    )
+                },
                 leadingIcon = {
                     if (isSearchExpanded) {
                         IconButton(
@@ -154,20 +165,30 @@ private fun ExploreSearchBarContent(
         }
 
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .statusBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 8.dp)
-                .clip(SearchBarDefaults.inputFieldShape)
+                .fillMaxWidth()
+                .height(56.dp)
+                .clip(RoundedCornerShape(22.dp))
                 .background(Color(0xFF1C1D2C))
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                    shape = RoundedCornerShape(22.dp)
+                )
         ) {
             AppBarWithSearch(
                 modifier = Modifier.fillMaxWidth(),
                 scrollBehavior = scrollBehavior,
                 state = searchBarState,
                 colors = appBarWithSearchColors,
+                windowInsets = WindowInsets(0),
                 inputField = inputField,
             )
         }
