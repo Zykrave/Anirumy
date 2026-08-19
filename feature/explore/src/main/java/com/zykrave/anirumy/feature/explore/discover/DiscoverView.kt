@@ -192,7 +192,14 @@ private fun DiscoverContent(
                                     modifier = Modifier.size(AssistChipDefaults.IconSize),
                                     tint = MaterialTheme.colorScheme.primary
                                 )
-                            }
+                            },
+                            colors = AssistChipDefaults.assistChipColors(
+                                labelColor = MaterialTheme.colorScheme.primary
+                            ),
+                            border = AssistChipDefaults.assistChipBorder(
+                                enabled = true,
+                                borderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                            )
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         AssistChip(
@@ -204,7 +211,14 @@ private fun DiscoverContent(
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.primary
                                 )
-                            }
+                            },
+                            colors = AssistChipDefaults.assistChipColors(
+                                labelColor = MaterialTheme.colorScheme.primary
+                            ),
+                            border = AssistChipDefaults.assistChipBorder(
+                                enabled = true,
+                                borderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                            )
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         ChartType.animeCharts.forEach { chartType ->
@@ -217,7 +231,14 @@ private fun DiscoverContent(
                                         contentDescription = null,
                                         tint = MaterialTheme.colorScheme.primary
                                     )
-                                }
+                                },
+                                colors = AssistChipDefaults.assistChipColors(
+                                    labelColor = MaterialTheme.colorScheme.primary
+                                ),
+                                border = AssistChipDefaults.assistChipBorder(
+                                    enabled = true,
+                                    borderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                                )
                             )
                             Spacer(modifier = Modifier.width(12.dp))
                         }
@@ -246,7 +267,14 @@ private fun DiscoverContent(
                                         contentDescription = null,
                                         tint = MaterialTheme.colorScheme.primary
                                     )
-                                }
+                                },
+                                colors = AssistChipDefaults.assistChipColors(
+                                    labelColor = MaterialTheme.colorScheme.primary
+                                ),
+                                border = AssistChipDefaults.assistChipBorder(
+                                    enabled = true,
+                                    borderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                                )
                             )
                             Spacer(modifier = Modifier.width(12.dp))
                         }

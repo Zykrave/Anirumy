@@ -1,7 +1,9 @@
 package com.zykrave.anirumy.feature.explore
 import com.zykrave.anirumy.core.resources.R
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -29,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -84,7 +87,9 @@ private fun ExploreSearchBarContent(
     val scrollBehavior = SearchBarDefaults.enterAlwaysSearchBarScrollBehavior()
     val appBarWithSearchColors =
         SearchBarDefaults.appBarWithSearchColors(
-            searchBarColors = SearchBarDefaults.containedColors(state = searchBarState)
+            searchBarColors = SearchBarDefaults.colors(
+                containerColor = Color.Transparent
+            )
         )
 
     LaunchedEffect(isSearchExpanded) {
@@ -153,19 +158,25 @@ private fun ExploreSearchBarContent(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AppBarWithSearch(
+        Box(
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 8.dp)
+                .clip(SearchBarDefaults.inputFieldShape)
+                .background(Color(0xFF1C1D2C))
                 .border(
                     width = 1.dp,
                     color = Color(0xFF8B5CF6).copy(alpha = 0.5f),
                     shape = SearchBarDefaults.inputFieldShape
-                ),
-            scrollBehavior = scrollBehavior,
-            state = searchBarState,
-            colors = appBarWithSearchColors,
-            inputField = inputField,
-        )
+                )
+        ) {
+            AppBarWithSearch(
+                modifier = Modifier.fillMaxWidth(),
+                scrollBehavior = scrollBehavior,
+                state = searchBarState,
+                colors = appBarWithSearchColors,
+                inputField = inputField,
+            )
+        }
         ExpandedFullScreenSearchBar(
             state = searchBarState,
             inputField = inputField,
