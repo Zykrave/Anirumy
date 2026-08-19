@@ -1,8 +1,10 @@
 package com.zykrave.anirumy.core.ui.composables
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -13,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -69,7 +72,7 @@ fun PlainPreference(
     subtitle: String? = null,
     @DrawableRes icon: Int? = null,
     iconTint: Color = MaterialTheme.colorScheme.primary,
-    iconPadding: PaddingValues = PaddingValues(16.dp),
+    iconPadding: PaddingValues = PaddingValues(8.dp),
     enabled: Boolean = true,
     isLoading: Boolean = false,
     onClick: () -> Unit
@@ -86,17 +89,28 @@ fun PlainPreference(
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (icon != null) {
-                Icon(
-                    painter = painterResource(icon),
-                    contentDescription = title,
-                    modifier = Modifier.padding(iconPadding),
-                    tint = if (enabled) iconTint else iconTint.copy(alpha = 0.38f)
-                )
+                Box(
+                    modifier = Modifier
+                        .padding(iconPadding)
+                        .size(40.dp)
+                        .background(
+                            color = Color(0xFF2A2B3D),
+                            shape = RoundedCornerShape(12.dp)
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(icon),
+                        contentDescription = title,
+                        modifier = Modifier.size(24.dp),
+                        tint = if (enabled) iconTint else iconTint.copy(alpha = 0.38f)
+                    )
+                }
             } else {
                 Spacer(
                     modifier = Modifier
                         .padding(iconPadding)
-                        .size(24.dp)
+                        .size(40.dp)
                 )
             }
 
@@ -135,7 +149,7 @@ fun SwitchPreference(
     preferenceValue: Boolean?,
     @DrawableRes icon: Int? = null,
     iconTint: Color = MaterialTheme.colorScheme.primary,
-    iconPadding: PaddingValues = PaddingValues(16.dp),
+    iconPadding: PaddingValues = PaddingValues(8.dp),
     onValueChange: (Boolean) -> Unit
 ) {
     Row(
@@ -153,17 +167,28 @@ fun SwitchPreference(
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (icon != null) {
-                Icon(
-                    painter = painterResource(icon),
-                    contentDescription = title,
-                    modifier = Modifier.padding(iconPadding),
-                    tint = iconTint
-                )
+                Box(
+                    modifier = Modifier
+                        .padding(iconPadding)
+                        .size(40.dp)
+                        .background(
+                            color = Color(0xFF2A2B3D),
+                            shape = RoundedCornerShape(12.dp)
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(icon),
+                        contentDescription = title,
+                        modifier = Modifier.size(24.dp),
+                        tint = iconTint
+                    )
+                }
             } else {
                 Spacer(
                     modifier = Modifier
                         .padding(iconPadding)
-                        .size(24.dp)
+                        .size(40.dp)
                 )
             }
 
@@ -218,17 +243,28 @@ fun <T> ListPreference(
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (icon != null) {
-            Icon(
-                painter = painterResource(icon),
-                contentDescription = title,
-                modifier = Modifier.padding(16.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
+            Box(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .size(40.dp)
+                    .background(
+                        color = Color(0xFF2A2B3D),
+                        shape = RoundedCornerShape(12.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(icon),
+                    contentDescription = title,
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
         } else {
             Spacer(
                 modifier = Modifier
-                    .padding(16.dp)
-                    .size(24.dp)
+                    .padding(8.dp)
+                    .size(40.dp)
             )
         }
 
