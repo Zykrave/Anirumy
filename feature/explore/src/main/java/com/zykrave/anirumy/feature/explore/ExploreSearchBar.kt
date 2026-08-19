@@ -2,7 +2,6 @@ package com.zykrave.anirumy.feature.explore
 import com.zykrave.anirumy.core.resources.R
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -163,11 +162,6 @@ private fun ExploreSearchBarContent(
                 .padding(horizontal = 16.dp, vertical = 8.dp)
                 .clip(SearchBarDefaults.inputFieldShape)
                 .background(Color(0xFF1C1D2C))
-                .border(
-                    width = 1.dp,
-                    color = Color(0xFF8B5CF6).copy(alpha = 0.5f),
-                    shape = SearchBarDefaults.inputFieldShape
-                )
         ) {
             AppBarWithSearch(
                 modifier = Modifier.fillMaxWidth(),
