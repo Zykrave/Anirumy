@@ -107,7 +107,7 @@ class UserStatsViewModel(
         // genres
         mutableUiState
             .filter {
-                it.type == UserStatType.GENRES
+                it.type == UserStatType.GENRES || it.type == UserStatType.OVERVIEW
             }
             .distinctUntilChanged { old, new ->
                 old.genresType == new.genresType
