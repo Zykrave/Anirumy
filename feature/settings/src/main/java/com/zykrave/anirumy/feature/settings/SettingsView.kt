@@ -399,7 +399,7 @@ private fun SettingsContent(
             PlainPreference(
                 title = stringResource(R.string.version),
                 subtitle = versionString,
-                icon = R.drawable.anihyou_24,
+                icon = R.drawable.app_logo_a_24,
                 onClick = {
                     context.copyToClipBoard(versionString)
                 }
