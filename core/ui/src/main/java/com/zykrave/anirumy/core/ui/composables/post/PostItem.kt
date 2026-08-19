@@ -1,6 +1,9 @@
 package com.zykrave.anirumy.core.ui.composables.post
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -8,13 +11,17 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Card
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -39,10 +46,33 @@ fun PostItem(
     subtitle: @Composable () -> Unit = {},
     onClick: () -> Unit,
 ) {
-    Card(
-        onClick = onClick,
-        modifier = modifier.size(width = POST_ITEM_WIDTH.dp, height = POST_ITEM_HEIGHT.dp)
+    Box(
+        modifier = modifier
+            .size(width = POST_ITEM_WIDTH.dp, height = POST_ITEM_HEIGHT.dp)
+            .shadow(
+                elevation = 6.dp,
+                shape = RoundedCornerShape(14.dp),
+                ambientColor = Color.Black.copy(alpha = 0.4f),
+                spotColor = Color.Black.copy(alpha = 0.4f)
+            )
+            .clip(RoundedCornerShape(14.dp))
+            .background(Color(0xFF1C1D2C))
+            .clickable(onClick = onClick)
     ) {
+        // Glass Sheen Overlay
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .background(
+                    Brush.verticalGradient(
+                        listOf(
+                            Color.White.copy(alpha = 0.05f),
+                            Color.White.copy(alpha = 0f)
+                        )
+                    )
+                )
+        )
+
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -91,9 +121,32 @@ fun PostItem(
 fun PostItemPlaceholder(
     modifier: Modifier = Modifier,
 ) {
-    Card(
-        modifier = modifier.size(width = POST_ITEM_WIDTH.dp, height = POST_ITEM_HEIGHT.dp)
+    Box(
+        modifier = modifier
+            .size(width = POST_ITEM_WIDTH.dp, height = POST_ITEM_HEIGHT.dp)
+            .shadow(
+                elevation = 6.dp,
+                shape = RoundedCornerShape(14.dp),
+                ambientColor = Color.Black.copy(alpha = 0.4f),
+                spotColor = Color.Black.copy(alpha = 0.4f)
+            )
+            .clip(RoundedCornerShape(14.dp))
+            .background(Color(0xFF1C1D2C))
     ) {
+        // Glass Sheen Overlay
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .background(
+                    Brush.verticalGradient(
+                        listOf(
+                            Color.White.copy(alpha = 0.05f),
+                            Color.White.copy(alpha = 0f)
+                        )
+                    )
+                )
+        )
+
         Column(
             modifier = Modifier
                 .padding(16.dp)
