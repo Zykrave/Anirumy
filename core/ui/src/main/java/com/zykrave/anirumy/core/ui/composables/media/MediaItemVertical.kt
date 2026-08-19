@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
@@ -100,10 +102,26 @@ fun MediaItemVertical(
             .sizeIn(
                 maxWidth = MEDIA_POSTER_SMALL_WIDTH.dp,
                 minHeight = MEDIA_ITEM_VERTICAL_HEIGHT.dp
+            )
+            .shadow(
+                elevation = 6.dp,
+                shape = RoundedCornerShape(14.dp),
+                ambientColor = Color.Black.copy(alpha = 0.4f),
+                spotColor = Color.Black.copy(alpha = 0.4f)
+            )
+            .clip(RoundedCornerShape(14.dp))
+            .background(Color(0xFF1C1D2C))
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color.White.copy(alpha = 0.05f),
+                        Color.White.copy(alpha = 0f)
+                    )
+                )
             ),
         onLongClick = onLongClick,
         supportingContent = subtitle,
-        contentPadding = PaddingValues()
+        contentPadding = PaddingValues(8.dp)
     ) {
         Column {
             val posterSizeModifier = Modifier
