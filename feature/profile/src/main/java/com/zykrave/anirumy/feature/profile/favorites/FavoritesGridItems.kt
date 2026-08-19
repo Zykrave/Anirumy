@@ -1,12 +1,19 @@
 package com.zykrave.anirumy.feature.profile.favorites
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.Card
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -179,12 +186,33 @@ internal fun LazyGridScope.favoritesItems(
             ) { item ->
                 if (reorderableState != null) {
                     ReorderableItem(reorderableState, key = item.id) {
-                        Card(
+                        Box(
                             modifier = Modifier
                                 .padding(horizontal = 4.dp)
-                                .longPressDraggableHandle(),
-                            onClick = { onStudioClick(item.id) }
+                                .shadow(
+                                    elevation = 6.dp,
+                                    shape = RoundedCornerShape(14.dp),
+                                    ambientColor = Color.Black.copy(alpha = 0.4f),
+                                    spotColor = Color.Black.copy(alpha = 0.4f)
+                                )
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(Color(0xFF1C1D2C))
+                                .longPressDraggableHandle()
+                                .clickable { onStudioClick(item.id) }
                         ) {
+                            // Glass Sheen Overlay
+                            Box(
+                                modifier = Modifier
+                                    .matchParentSize()
+                                    .background(
+                                        Brush.verticalGradient(
+                                            listOf(
+                                                Color.White.copy(alpha = 0.05f),
+                                                Color.White.copy(alpha = 0f)
+                                            )
+                                        )
+                                    )
+                            )
                             Text(
                                 text = item.name,
                                 modifier = Modifier.padding(
@@ -197,10 +225,32 @@ internal fun LazyGridScope.favoritesItems(
                         }
                     }
                 } else {
-                    Card(
-                        modifier = Modifier.padding(horizontal = 4.dp),
-                        onClick = { onStudioClick(item.id) }
+                    Box(
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
+                            .shadow(
+                                elevation = 6.dp,
+                                shape = RoundedCornerShape(14.dp),
+                                ambientColor = Color.Black.copy(alpha = 0.4f),
+                                spotColor = Color.Black.copy(alpha = 0.4f)
+                            )
+                            .clip(RoundedCornerShape(14.dp))
+                            .background(Color(0xFF1C1D2C))
+                            .clickable { onStudioClick(item.id) }
                     ) {
+                        // Glass Sheen Overlay
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .background(
+                                    Brush.verticalGradient(
+                                        listOf(
+                                            Color.White.copy(alpha = 0.05f),
+                                            Color.White.copy(alpha = 0f)
+                                        )
+                                    )
+                                )
+                        )
                         Text(
                             text = item.name,
                             modifier = Modifier.padding(
@@ -215,11 +265,32 @@ internal fun LazyGridScope.favoritesItems(
             }
             if (isLoading) {
                 items(14) {
-                    Card(
+                    Box(
                         modifier = Modifier
                             .padding(horizontal = 4.dp)
+                            .shadow(
+                                elevation = 6.dp,
+                                shape = RoundedCornerShape(14.dp),
+                                ambientColor = Color.Black.copy(alpha = 0.4f),
+                                spotColor = Color.Black.copy(alpha = 0.4f)
+                            )
+                            .clip(RoundedCornerShape(14.dp))
+                            .background(Color(0xFF1C1D2C))
                             .defaultPlaceholder(visible = true),
                     ) {
+                        // Glass Sheen Overlay
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .background(
+                                    Brush.verticalGradient(
+                                        listOf(
+                                            Color.White.copy(alpha = 0.05f),
+                                            Color.White.copy(alpha = 0f)
+                                        )
+                                    )
+                                )
+                        )
                         Text(
                             text = stringResource(R.string.loading),
                             modifier = Modifier.padding(

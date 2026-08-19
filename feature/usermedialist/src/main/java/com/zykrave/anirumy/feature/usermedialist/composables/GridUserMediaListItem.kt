@@ -2,6 +2,7 @@ package com.zykrave.anirumy.feature.usermedialist.composables
 import com.zykrave.anirumy.core.common.utils.NumberUtils.format
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,13 +15,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.Card
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -62,11 +67,32 @@ fun GridUserMediaListItem(
     val blurAdult = LocalBlurAdult.current
     val status = listStatus ?: item.basicMediaListEntry.status
     val priority = item.basicMediaListEntry.priority
-    Card(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
+            .shadow(
+                elevation = 6.dp,
+                shape = RoundedCornerShape(14.dp),
+                ambientColor = Color.Black.copy(alpha = 0.4f),
+                spotColor = Color.Black.copy(alpha = 0.4f)
+            )
+            .clip(RoundedCornerShape(14.dp))
+            .background(Color(0xFF1C1D2C))
             .combinedClickable(onLongClick = onLongClick, onClick = onClick),
     ) {
+        // Glass Sheen Overlay
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .background(
+                    Brush.verticalGradient(
+                        listOf(
+                            Color.White.copy(alpha = 0.05f),
+                            Color.White.copy(alpha = 0f)
+                        )
+                    )
+                )
+        )
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -135,7 +161,7 @@ fun GridUserMediaListItem(
                 }
             }
         }//:Column
-    }//:Card
+    }//:Box
 }
 
 @Preview

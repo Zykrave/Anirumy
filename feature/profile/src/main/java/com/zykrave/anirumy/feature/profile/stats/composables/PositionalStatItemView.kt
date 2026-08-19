@@ -1,6 +1,7 @@
 package com.zykrave.anirumy.feature.profile.stats.composables
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,13 +11,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Card
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,69 +46,92 @@ fun PositionalStatItemView(
     imageUrl: String? = null,
     onClick: () -> Unit = {},
 ) {
-    Card(
-        onClick = onClick,
-        modifier = modifier,
+    Box(
+        modifier = modifier
+            .shadow(
+                elevation = 6.dp,
+                shape = RoundedCornerShape(14.dp),
+                ambientColor = Color.Black.copy(alpha = 0.4f),
+                spotColor = Color.Black.copy(alpha = 0.4f)
+            )
+            .clip(RoundedCornerShape(14.dp))
+            .background(Color(0xFF1C1D2C))
+            .clickable(onClick = onClick)
     ) {
-        Row(
+        // Glass Sheen Overlay
+        Box(
             modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (imageUrl != null) {
-                PersonImage(
-                    url = imageUrl,
-                    modifier = Modifier
-                        .padding(end = 16.dp)
-                        .size(50.dp)
+                .matchParentSize()
+                .background(
+                    Brush.verticalGradient(
+                        listOf(
+                            Color.White.copy(alpha = 0.05f),
+                            Color.White.copy(alpha = 0f)
+                        )
+                    )
                 )
-            }
-            Text(
-                text = name,
-                fontWeight = FontWeight.Medium
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Box(
+        )
+        Column {
+            Row(
                 modifier = Modifier
-                    .background(
-                        color = MaterialTheme.colorScheme.secondary,
-                        shape = CircleShape
-                    ),
-                contentAlignment = Alignment.Center
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
+                if (imageUrl != null) {
+                    PersonImage(
+                        url = imageUrl,
+                        modifier = Modifier
+                            .padding(end = 16.dp)
+                            .size(50.dp)
+                    )
+                }
                 Text(
-                    text = "#$position",
-                    color = MaterialTheme.colorScheme.onSecondary,
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                    text = name,
+                    fontWeight = FontWeight.Medium
                 )
+                Spacer(modifier = Modifier.weight(1f))
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = MaterialTheme.colorScheme.secondary,
+                            shape = CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "#$position",
+                        color = MaterialTheme.colorScheme.onSecondary,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                    )
+                }
             }
-        }
-        Row(
-            modifier = Modifier
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            TextSubtitleVertical(
-                text = count.format(),
-                subtitle = stringResource(R.string.title_count)
-            )
-            TextSubtitleVertical(
-                text = meanScore.format(),
-                subtitle = stringResource(R.string.mean_score)
-            )
-            if (minutesWatched != null) {
+            Row(
+                modifier = Modifier
+                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 TextSubtitleVertical(
-                    text = (minutesWatched * 60L).secondsToLegibleText(isFutureDate = false),
-                    subtitle = stringResource(R.string.time_spent)
+                    text = count.format(),
+                    subtitle = stringResource(R.string.title_count)
                 )
-            } else if (chaptersRead != null) {
                 TextSubtitleVertical(
-                    text = chaptersRead.format(),
-                    subtitle = stringResource(R.string.chapters_read)
+                    text = meanScore.format(),
+                    subtitle = stringResource(R.string.mean_score)
                 )
+                if (minutesWatched != null) {
+                    TextSubtitleVertical(
+                        text = (minutesWatched * 60L).secondsToLegibleText(isFutureDate = false),
+                        subtitle = stringResource(R.string.time_spent)
+                    )
+                } else if (chaptersRead != null) {
+                    TextSubtitleVertical(
+                        text = chaptersRead.format(),
+                        subtitle = stringResource(R.string.chapters_read)
+                    )
+                }
             }
         }
     }
@@ -113,36 +141,60 @@ fun PositionalStatItemView(
 fun PositionalStatItemViewPlaceholder(
     modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth()
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .shadow(
+                elevation = 6.dp,
+                shape = RoundedCornerShape(14.dp),
+                ambientColor = Color.Black.copy(alpha = 0.4f),
+                spotColor = Color.Black.copy(alpha = 0.4f)
+            )
+            .clip(RoundedCornerShape(14.dp))
+            .background(Color(0xFF1C1D2C))
     ) {
-        Row(
+        // Glass Sheen Overlay
+        Box(
             modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 16.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "Loading",
-                modifier = Modifier.defaultPlaceholder(visible = true)
-            )
-            Text(
-                text = "#10",
-                modifier = Modifier.defaultPlaceholder(visible = true)
-            )
-        }
-        Row(
-            modifier = Modifier
-                .padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 16.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            repeat(3) {
-                Spacer(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .defaultPlaceholder(visible = true)
+                .matchParentSize()
+                .background(
+                    Brush.verticalGradient(
+                        listOf(
+                            Color.White.copy(alpha = 0.05f),
+                            Color.White.copy(alpha = 0f)
+                        )
+                    )
                 )
+        )
+        Column {
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 16.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Loading",
+                    modifier = Modifier.defaultPlaceholder(visible = true)
+                )
+                Text(
+                    text = "#10",
+                    modifier = Modifier.defaultPlaceholder(visible = true)
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 16.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                repeat(3) {
+                    Spacer(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .defaultPlaceholder(visible = true)
+                    )
+                }
             }
         }
     }
