@@ -1,6 +1,9 @@
 package com.zykrave.anirumy.core.ui.composables.media
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +20,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zykrave.anirumy.core.resources.R
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AiringHeroCard(
     title: String,
@@ -49,10 +54,24 @@ fun AiringHeroCard(
             .background(
                 Brush.horizontalGradient(
                     colors = listOf(
-                        MaterialTheme.colorScheme.primary,
-                        Color(0xFF4C6FFF),
+                        Color(0xFF3B1D8F),
+                        Color(0xFF1E3A8A),
                     )
                 )
+            )
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color.Black.copy(alpha = 0f),
+                        Color.Black.copy(alpha = 0.35f),
+                    )
+                )
+            )
+            .combinedClickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onClick,
+                onLongClick = onLongClick,
             )
     ) {
         Row(
