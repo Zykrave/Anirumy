@@ -47,11 +47,36 @@ Anirumy is an **unofficial third-party client for [AniList](https://anilist.co)*
   </tr>
 </table>
 
-## 📥 Download
+## 📥 Installation
 
-Grab the latest APK from the [Releases](../../releases) page.
+### 1. Download the APK
 
-> **Note:** Since this isn't distributed through the Play Store, Android/Play Protect will show a standard "unrecognized app" warning on install. This is expected for any sideloaded app and doesn't mean the app is unsafe.
+Grab the latest `app-foss-release.apk` from the [Releases](../../releases) page.
+
+### 2. Allow installs from this source
+
+Since Anirumy isn't distributed through the Play Store, your phone will ask for permission the first time you install an APK from outside the store:
+
+- Tap the downloaded APK file
+- If prompted, tap **Settings**, then enable **"Allow from this source"** for your browser or file manager
+- Go back and tap **Install**
+
+### 3. About the Google Play Protect warning
+
+You will very likely see a screen from **Google Play Protect** during installation that says something like:
+
+> *"Unsafe app blocked"* or *"App isn't verified"* or *"This app wasn't scanned for harmful behavior"*
+
+**This is expected and normal.** It happens for every app distributed outside the Play Store, regardless of how safe or well-built it is — it is not specific to Anirumy. Google Play Protect flags any APK it hasn't independently reviewed through its Play Store pipeline.
+
+Anirumy is fully open source — every line of code in this repository is public, so you (or anyone) can verify exactly what the app does before installing.
+
+If you see this warning and want to proceed anyway:
+
+- Tap **More details** (or similar, wording varies by Android version)
+- Tap **Install anyway**
+
+If you're not comfortable bypassing that warning, that's completely reasonable too — you're welcome to review the source code yourself first, or wait until/if the app becomes available through F-Droid or a similar verified channel.
 
 ## 🙏 Credits & License
 
