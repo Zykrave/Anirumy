@@ -34,12 +34,18 @@ Anirumy is an **unofficial third-party client for [AniList](https://anilist.co)*
 
 ## 📱 Screenshots
 
-![Screenshot 1](.github/screenshots/Screenshot_2026-08-19-22-57-06-07_55718e08f28eb2b49906ccbac1d7c317.jpg)
-![Screenshot 2](.github/screenshots/Screenshot_2026-08-19-22-57-15-21_55718e08f28eb2b49906ccbac1d7c317.jpg)
-![Screenshot 3](.github/screenshots/Screenshot_2026-08-19-22-57-20-08_55718e08f28eb2b49906ccbac1d7c317.jpg)
-![Screenshot 4](.github/screenshots/Screenshot_2026-08-19-22-57-25-20_55718e08f28eb2b49906ccbac1d7c317.jpg)
-![Screenshot 5](.github/screenshots/Screenshot_2026-08-19-22-57-34-55_55718e08f28eb2b49906ccbac1d7c317.jpg)
-![Screenshot 6](.github/screenshots/Screenshot_2026-08-19-22-57-39-98_55718e08f28eb2b49906ccbac1d7c317.jpg)
+<table>
+  <tr>
+    <td><img src=".github/screenshots/Screenshot_2026-08-19-22-57-06-07_55718e08f28eb2b49906ccbac1d7c317.jpg" width="200"></td>
+    <td><img src=".github/screenshots/Screenshot_2026-08-19-22-57-15-21_55718e08f28eb2b49906ccbac1d7c317.jpg" width="200"></td>
+    <td><img src=".github/screenshots/Screenshot_2026-08-19-22-57-20-08_55718e08f28eb2b49906ccbac1d7c317.jpg" width="200"></td>
+  </tr>
+  <tr>
+    <td><img src=".github/screenshots/Screenshot_2026-08-19-22-57-25-20_55718e08f28eb2b49906ccbac1d7c317.jpg" width="200"></td>
+    <td><img src=".github/screenshots/Screenshot_2026-08-19-22-57-34-55_55718e08f28eb2b49906ccbac1d7c317.jpg" width="200"></td>
+    <td><img src=".github/screenshots/Screenshot_2026-08-19-22-57-39-98_55718e08f28eb2b49906ccbac1d7c317.jpg" width="200"></td>
+  </tr>
+</table>
 
 ## 📥 Download
 
