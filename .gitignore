@@ -22,3 +22,11 @@ items_usage.txt
 my_build_output.txt
 r_imports.txt
 r_usage.txt
+
+keystore.properties
+*.jks
+*.keystore
+
+/keystores/
+App view/
+.artifacts/

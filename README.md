@@ -1,44 +1,62 @@
-# <img alt="app-icon" height="50" src="https://github.com/axiel7/AniHyou-android/blob/master/core/resources/src/main/res/mipmap-hdpi/ic_launcher_round.webp"/>AniHyou
+<p align="center">
+  <img src=".github/icon.png" width="120" alt="Anirumy icon">
+</p>
 
-[![Downloads](https://img.shields.io/github/downloads/axiel7/AniHyou-android/total.svg)](https://github.com/axiel7/MoeList/releases/latest)
-[![Crowdin](https://badges.crowdin.net/anihyou/localized.svg)](https://crowdin.com/project/anihyou)
-[![Donate](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://ko-fi.com/axiel7)
+<h1 align="center">Anirumy</h1>
 
-Another unofficial Android AniList client
+<p align="center">
+  <b>An unofficial AniList client for Android — track your anime and manga, the modern way.</b>
+</p>
 
-[<img alt="Google Play" height="80" src="https://play.google.com/intl/en_US/badges/images/generic/en_badge_web_generic.png"/>](https://play.google.com/store/apps/details?id=com.axiel7.anihyou)
-[<img alt="Get it on F-Droid" height="80" src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png">](https://f-droid.org/packages/com.axiel7.anihyou)
+<p align="center">
+  <img src="https://img.shields.io/badge/Platform-Android-3DDC84?style=flat&logo=android&logoColor=white" alt="Platform">
+  <img src="https://img.shields.io/badge/Kotlin-7F52FF?style=flat&logo=kotlin&logoColor=white" alt="Kotlin">
+  <img src="https://img.shields.io/badge/License-GPLv3-blue?style=flat" alt="License">
+</p>
 
-iOS version [here](https://github.com/axiel7/AniHyou-iOS)
+---
 
-Get latest beta version from [nightly.link](https://nightly.link/axiel7/AniHyou-android/workflows/build-upload-android/develop)
+## About
 
-Follow the development on the official Discord server:
+Anirumy is an **unofficial third-party client for [AniList](https://anilist.co)**, built natively for Android. It's not affiliated with AniList — just a fast, clean way to manage your anime and manga lists without opening a browser.
 
-[![Discord Banner 3](https://discordapp.com/api/guilds/741059285122940928/widget.png?style=banner2)](https://discord.gg/CTv3WdfxHh)
+## ✨ Why Anirumy
 
-# Screenshots
-![Screenshots](https://github.com/axiel7/AniHyou-android/blob/master/screenshots.webp)
+- **Unofficial AniList client** — built specifically around AniList's API, not a generic tracker.
+- **Modern UI** — clean, native Material-style design, not a reskinned web view.
+- **Easy to use** — straightforward navigation, nothing bloated or cluttered.
+- **AniList sync** — log in with your AniList account and keep your list synced in real time.
+- **And more** — actively maintained with more features on the way.
 
-## Coming features
-- [See project](https://github.com/users/axiel7/projects/2/views/1)
+## 📱 Screenshots
 
-# Donate 💸
-Support the development of AniHyou by making a donation via:
+![Screenshot 1](.github/screenshots/Screenshot_2026-08-19-22-57-06-07_55718e08f28eb2b49906ccbac1d7c317.jpg)
+![Screenshot 2](.github/screenshots/Screenshot_2026-08-19-22-57-15-21_55718e08f28eb2b49906ccbac1d7c317.jpg)
+![Screenshot 3](.github/screenshots/Screenshot_2026-08-19-22-57-20-08_55718e08f28eb2b49906ccbac1d7c317.jpg)
+![Screenshot 4](.github/screenshots/Screenshot_2026-08-19-22-57-25-20_55718e08f28eb2b49906ccbac1d7c317.jpg)
+![Screenshot 5](.github/screenshots/Screenshot_2026-08-19-22-57-34-55_55718e08f28eb2b49906ccbac1d7c317.jpg)
+![Screenshot 6](.github/screenshots/Screenshot_2026-08-19-22-57-39-98_55718e08f28eb2b49906ccbac1d7c317.jpg)
 
-[Ko-Fi](https://ko-fi.com/axiel7)
+## 📥 Download
 
-BTC
-```
-3KKjJuorh9se2jUo1Hr6MFgXhnBWbj5fTP
-```
+Grab the latest APK from the [Releases](../../releases) page.
 
-ETH
-```
-0xBd20dD0e036B246F879EeFde52601f0fBbeC69c0
-```
+> **Note:** Since this isn't distributed through the Play Store, Android/Play Protect will show a standard "unrecognized app" warning on install. This is expected for any sideloaded app and doesn't mean the app is unsafe.
 
-LTC
-```
-MRw5XPLsM9SVf48tv4nwQoY12nMXaiVzmD
-```
+## 🙏 Credits & License
+
+Anirumy is a derivative work built on top of open-source AniList client projects, most notably [AniHyou-android by axiel7](https://github.com/axiel7/AniHyou-android).
+
+This project is licensed under the **GNU General Public License v3.0 (GPLv3)** — the same license as its upstream project. See the [LICENSE](LICENSE) file for full terms.
+
+As required by GPLv3, the full source code of Anirumy is available in this repository.
+
+## ⚠️ Disclaimer
+
+Anirumy is not affiliated with, endorsed by, or connected to AniList in any way. It's an independent, community-built client.
+
+---
+
+<p align="center">Made by <a href="https://github.com/Zykrave">Zykrave</a></p>
+
+---
