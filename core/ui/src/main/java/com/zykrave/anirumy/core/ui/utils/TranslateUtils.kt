@@ -4,6 +4,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.zykrave.anirumy.core.ui.BuildConfig
 import com.zykrave.anirumy.core.resources.R
 import com.zykrave.anirumy.core.common.utils.ContextUtils.copyToClipBoard
 import com.zykrave.anirumy.core.common.utils.ContextUtils.showToast
@@ -67,7 +68,9 @@ object TranslateUtils {
             }
             true
         } catch (e: Exception) {
-            Log.d("translate", e.toString())
+            if (BuildConfig.DEBUG) {
+                Log.d("translate", e.toString())
+            }
             false
         }
     }
@@ -85,7 +88,9 @@ object TranslateUtils {
             }
             true
         } catch (e: Exception) {
-            Log.d("translate", e.toString())
+            if (BuildConfig.DEBUG) {
+                Log.d("translate", e.toString())
+            }
             false
         }
     }
@@ -102,7 +107,9 @@ object TranslateUtils {
             }
             true
         } catch (e: Exception) {
-            Log.d("translate", e.toString())
+            if (BuildConfig.DEBUG) {
+                Log.d("translate", e.toString())
+            }
             false
         }
     }
@@ -120,7 +127,9 @@ object TranslateUtils {
             }
             true
         } catch (e: Exception) {
-            Log.d("translate", e.toString())
+            if (BuildConfig.DEBUG) {
+                Log.d("translate", e.toString())
+            }
             false
         }
     }

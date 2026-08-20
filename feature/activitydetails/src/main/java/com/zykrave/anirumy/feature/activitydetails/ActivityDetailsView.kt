@@ -171,6 +171,7 @@ private fun ActivityDetailsContent(
                 }
                 items(
                     items = uiState.replies,
+                    key = { it.id },
                     contentType = { it }
                 ) { item ->
                     ActivityTextView(

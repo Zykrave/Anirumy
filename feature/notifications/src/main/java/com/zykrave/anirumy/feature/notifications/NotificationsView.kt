@@ -125,6 +125,7 @@ private fun NotificationsContent(
             }
             items(
                 items = uiState.notifications,
+                key = { it.id },
                 contentType = { it }
             ) { item ->
                 NotificationItem(

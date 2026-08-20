@@ -281,7 +281,10 @@ private fun DiscoverContent(
                     }
                 }
 
-                items(uiState.infos) { item ->
+                items(
+                    items = uiState.infos,
+                    key = { it }
+                ) { item ->
                     when (item) {
                         DiscoverInfo.AIRING -> {
                             LaunchedEffect(uiState.airingOnMyList) {

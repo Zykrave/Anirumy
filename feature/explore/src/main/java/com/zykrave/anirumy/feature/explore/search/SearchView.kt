@@ -325,6 +325,7 @@ fun SearchContentView(
                     }
                     items(
                         items = uiState.media,
+                        key = { it.id },
                         contentType = { it }
                     ) { item ->
                         MediaItemHorizontal(
@@ -364,6 +365,7 @@ fun SearchContentView(
                     }
                     items(
                         items = uiState.characters,
+                        key = { it.id },
                         contentType = { it }
                     ) { item ->
                         PersonItemHorizontal(
@@ -385,6 +387,7 @@ fun SearchContentView(
                     }
                     items(
                         items = uiState.staff,
+                        key = { it.id },
                         contentType = { it }
                     ) { item ->
                         PersonItemHorizontal(
@@ -411,6 +414,7 @@ fun SearchContentView(
                     }
                     items(
                         items = uiState.studios,
+                        key = { it.id },
                         contentType = { it }
                     ) { item ->
                         ListItem(
@@ -430,6 +434,7 @@ fun SearchContentView(
                     }
                     items(
                         items = uiState.users,
+                        key = { it.id },
                         contentType = { it }
                     ) { item ->
                         PersonItemHorizontal(
