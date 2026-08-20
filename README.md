@@ -14,6 +14,10 @@
   <img src="https://img.shields.io/badge/License-GPLv3-blue?style=flat" alt="License">
 </p>
 
+<p align="center">
+  <img src=".github/poster.png" width="800" alt="Anirumy promotional banner">
+</p>
+
 ---
 
 ## About
