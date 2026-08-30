@@ -6,6 +6,7 @@ import com.zykrave.anirumy.feature.calendar.CalendarHostViewModel
 import com.zykrave.anirumy.feature.calendar.CalendarViewModel
 import com.zykrave.anirumy.feature.characterdetails.CharacterDetailsViewModel
 import com.zykrave.anirumy.feature.editmedia.EditMediaViewModel
+import com.zykrave.anirumy.feature.gallery.GalleryViewModel
 import com.zykrave.anirumy.feature.explore.charts.MediaChartViewModel
 import com.zykrave.anirumy.feature.explore.discover.DiscoverViewModel
 import com.zykrave.anirumy.feature.explore.search.SearchViewModel
@@ -74,4 +75,5 @@ val viewModelModule = module {
     viewModel<ReorderFavoritesViewModel>()
     viewModel<PriorityColorViewModel>()
     viewModel<MediaCharactersViewModel>()
+    viewModel<GalleryViewModel>()
 }
