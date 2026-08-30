@@ -46,6 +46,10 @@ sealed interface Route : NavKey {
 
     @Serializable
     @Immutable
+    object Gallery: Route
+
+    @Serializable
+    @Immutable
     data class Search(
         val mediaType: String? = null,
         val mediaSort: String? = null,
