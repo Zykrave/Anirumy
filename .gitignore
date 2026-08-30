@@ -5,6 +5,7 @@
 !/.idea/icon.svg
 .DS_Store
 /build
+**/build/
 /app/release
 /captures
 .externalNativeBuild
