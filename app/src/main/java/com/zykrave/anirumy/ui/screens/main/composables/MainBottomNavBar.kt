@@ -9,7 +9,6 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -22,11 +21,16 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.boundsInParent
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
@@ -56,30 +60,43 @@ fun MainBottomNavBar(
         enter = slideInVertically(initialOffsetY = { it }),
         exit = slideOutVertically(targetOffsetY = { it })
     ) {
-        BoxWithConstraints(
+        Box(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 16.dp)
         ) {
-            val itemCount = BottomDestination.values.size
-            val itemWidth = maxWidth / itemCount
+            val density = LocalDensity.current
+            val itemBounds = remember {
+                mutableStateListOf<androidx.compose.ui.geometry.Rect>().apply {
+                    repeat(BottomDestination.values.size) { add(androidx.compose.ui.geometry.Rect.Zero) }
+                }
+            }
             val selectedIndex = BottomDestination.values
                 .indexOfFirst { it.route == currentTopRoute }
                 .coerceAtLeast(0)
+
             val indicatorOffset by animateDpAsState(
-                targetValue = itemWidth * selectedIndex,
+                targetValue = with(density) { itemBounds[selectedIndex].left.toDp() },
                 animationSpec = spring(
                     dampingRatio = Spring.DampingRatioMediumBouncy,
                     stiffness = Spring.StiffnessLow
                 ),
                 label = "nav_indicator_offset"
             )
+            val indicatorWidth by animateDpAsState(
+                targetValue = with(density) { itemBounds[selectedIndex].width.toDp() },
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessLow
+                ),
+                label = "nav_indicator_width"
+            )
 
             Box(
                 modifier = Modifier
                     .align(Alignment.TopStart)
-                    .offset(x = indicatorOffset + 12.dp, y = 10.dp)
-                    .width(itemWidth - 24.dp)
+                    .offset(x = indicatorOffset + 6.dp, y = 10.dp)
+                    .width((indicatorWidth - 12.dp).coerceAtLeast(0.dp))
                     .height(36.dp)
                     .clip(RoundedCornerShape(14.dp))
                     .background(MaterialTheme.colorScheme.primary)
@@ -109,10 +126,14 @@ fun MainBottomNavBar(
                         icon = {
                             dest.Icon(selected = isSelected)
                         },
-                        modifier = Modifier.semantics {
-                            testTagsAsResourceId = true
-                            testTag = dest.testTag
-                        },
+                        modifier = Modifier
+                            .onGloballyPositioned { coordinates ->
+                                itemBounds[index] = coordinates.boundsInParent()
+                            }
+                            .semantics {
+                                testTagsAsResourceId = true
+                                testTag = dest.testTag
+                            },
                         label = {
                             Text(
                                 text = stringResource(dest.title),
@@ -137,7 +158,7 @@ fun MainBottomNavBar(
                                     else -> {}
                                 }
                             } else {
-                                onItemSelected(index)
+                                onItemSelected(dest.index)
                                 navActionManager.navigate(dest.route)
                             }
                         }
