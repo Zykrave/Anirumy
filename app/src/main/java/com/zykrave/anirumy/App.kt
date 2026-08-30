@@ -15,6 +15,7 @@ import com.zykrave.anirumy.core.domain.dataStoreModule
 import com.zykrave.anirumy.core.domain.repositoryModule
 import com.zykrave.anirumy.core.network.apiModule
 import com.zykrave.anirumy.core.network.networkModule
+import com.zykrave.anirumy.feature.gallery.di.galleryNetworkModule
 import com.zykrave.anirumy.feature.worker.workerModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -35,6 +36,7 @@ class App : Application(), SingletonImageLoader.Factory {
             modules(
                 dataStoreModule,
                 networkModule,
+                galleryNetworkModule,
                 apiModule,
                 repositoryModule,
                 viewModelModule,
