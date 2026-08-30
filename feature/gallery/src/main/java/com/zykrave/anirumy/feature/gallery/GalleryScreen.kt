@@ -85,6 +85,13 @@ fun GalleryScreen() {
 
                 Box(modifier = Modifier.fillMaxSize()) {
                     when {
+                        uiState.error != null -> {
+                            Text(
+                                text = "ERROR: ${uiState.error}",
+                                modifier = Modifier.align(Alignment.Center).padding(24.dp),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
                         uiState.isLoading -> {
                             LoadingIndicator(
                                 modifier = Modifier

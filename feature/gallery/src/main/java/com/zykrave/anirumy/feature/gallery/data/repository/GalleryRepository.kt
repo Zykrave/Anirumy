@@ -1,6 +1,7 @@
 package com.zykrave.anirumy.feature.gallery.data.repository
 
 import com.zykrave.anirumy.feature.gallery.data.remote.NekosBestApi
+import com.zykrave.anirumy.feature.gallery.data.remote.WaifuImApi
 
 enum class GallerySource {
     NEKOS_BEST,
@@ -17,6 +18,7 @@ data class GalleryImage(
 
 class GalleryRepository(
     private val nekosBestApi: NekosBestApi,
+    private val waifuImApi: WaifuImApi,
 ) {
     suspend fun getImages(source: GallerySource, category: String): List<GalleryImage> {
         return when (source) {
@@ -32,8 +34,15 @@ class GalleryRepository(
                 }
             }
             GallerySource.WAIFU_IM -> {
-                // Not yet implemented — added in a later step.
-                emptyList()
+                val response = waifuImApi.getImages(includedTags = listOf(category))
+                response.items.map { image ->
+                    GalleryImage(
+                        url = image.url,
+                        width = image.width,
+                        height = image.height,
+                        attribution = image.artists.firstOrNull()?.name ?: image.source,
+                    )
+                }
             }
             GallerySource.WAIFU_PICS -> {
                 // Not yet implemented — added in a later step.
