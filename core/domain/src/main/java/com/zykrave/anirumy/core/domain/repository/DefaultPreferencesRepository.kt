@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.zykrave.anirumy.core.domain.getValue
 import com.zykrave.anirumy.core.domain.setValue
@@ -344,6 +345,15 @@ class DefaultPreferencesRepository (
         dataStore.setValue(HIDE_SCORES_KEY, value)
     }
 
+    val dismissedUpdateTag = dataStore.getValue(DISMISSED_UPDATE_TAG_KEY)
+    val dismissedUpdateUntil = dataStore.getValue(DISMISSED_UPDATE_UNTIL_KEY, default = 0L)
+
+    suspend fun setDismissedUpdate(tag: String, untilMillis: Long) {
+        dataStore.edit {
+            it[DISMISSED_UPDATE_TAG_KEY] = tag
+            it[DISMISSED_UPDATE_UNTIL_KEY] = untilMillis
+        }
+    }
 
     companion object {
         private val ACCESS_TOKEN_KEY = stringPreferencesKey("access_token")
@@ -386,5 +396,8 @@ class DefaultPreferencesRepository (
 
         private val TRANSLATOR_APP_KEY = stringPreferencesKey("translator_app")
         private val HIDE_SCORES_KEY = booleanPreferencesKey("hide_scores")
+
+        private val DISMISSED_UPDATE_TAG_KEY = stringPreferencesKey("dismissed_update_tag")
+        private val DISMISSED_UPDATE_UNTIL_KEY = longPreferencesKey("dismissed_update_until")
     }
 }

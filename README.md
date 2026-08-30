@@ -30,20 +30,34 @@ Anirumy is an **unofficial third-party client for [AniList](https://anilist.co)*
 - **Modern UI** — clean, native Material-style design, not a reskinned web view.
 - **Easy to use** — straightforward navigation, nothing bloated or cluttered.
 - **AniList sync** — log in with your AniList account and keep your list synced in real time.
+- **Gallery** — browse images from multiple sources (NekosBest, Waifu.im) with full-quality downloads directly to the device.
 - **And more** — actively maintained with more features on the way.
+
+## 🚀 Features
+
+- **AniList Sync** — full OAuth login, real-time list sync for anime and manga
+- **Browse & Discover** — explore trending, seasonal, and popular titles; full search
+- **Media Details** — rich info pages with characters, staff, reviews, and activity
+- **Social** — view and publish activity posts, thread comments, and discussions
+- **Calendar** — track airing schedules for your list
+- **Notifications** — stay updated on airing episodes and AniList activity
+- **Gallery** — browse and download full-quality images from multiple sources (NekosBest, Waifu.im)
+- **Custom Theming** — dynamic Material You color theming, dark mode, black AMOLED colors
+- **Auto Update Check** — get notified in-app when a new release is available, with changelog and one-tap link to download
 
 ## 📱 Screenshots
 
 <table>
   <tr>
-    <td><img src=".github/screenshots/Screenshot_2026-08-19-22-57-06-07_55718e08f28eb2b49906ccbac1d7c317.jpg" width="200"></td>
-    <td><img src=".github/screenshots/Screenshot_2026-08-19-22-57-15-21_55718e08f28eb2b49906ccbac1d7c317.jpg" width="200"></td>
-    <td><img src=".github/screenshots/Screenshot_2026-08-19-22-57-20-08_55718e08f28eb2b49906ccbac1d7c317.jpg" width="200"></td>
+    <td align="center"><img src=".github/screenshots/Home.jpg" width="200"><br><sub>Home</sub></td>
+    <td align="center"><img src=".github/screenshots/Explore.jpg" width="200"><br><sub>Explore</sub></td>
+    <td align="center"><img src=".github/screenshots/Anime.jpg" width="200"><br><sub>Anime List</sub></td>
+    <td align="center"><img src=".github/screenshots/Manga.jpg" width="200"><br><sub>Manga List</sub></td>
   </tr>
   <tr>
-    <td><img src=".github/screenshots/Screenshot_2026-08-19-22-57-25-20_55718e08f28eb2b49906ccbac1d7c317.jpg" width="200"></td>
-    <td><img src=".github/screenshots/Screenshot_2026-08-19-22-57-34-55_55718e08f28eb2b49906ccbac1d7c317.jpg" width="200"></td>
-    <td><img src=".github/screenshots/Screenshot_2026-08-19-22-57-39-98_55718e08f28eb2b49906ccbac1d7c317.jpg" width="200"></td>
+    <td align="center"><img src=".github/screenshots/Gallery.jpg" width="200"><br><sub>Gallery</sub></td>
+    <td align="center"><img src=".github/screenshots/Profile.jpg" width="200"><br><sub>Profile</sub></td>
+    <td align="center"><img src=".github/screenshots/Settings.jpg" width="200"><br><sub>Settings</sub></td>
   </tr>
 </table>
 

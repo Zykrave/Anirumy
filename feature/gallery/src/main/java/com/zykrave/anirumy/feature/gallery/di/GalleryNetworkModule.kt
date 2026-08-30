@@ -1,11 +1,13 @@
 package com.zykrave.anirumy.feature.gallery.di
 
+import com.zykrave.anirumy.feature.gallery.data.GalleryDownloader
 import com.zykrave.anirumy.feature.gallery.data.remote.NekosBestApi
 import com.zykrave.anirumy.feature.gallery.data.remote.WaifuImApi
 import com.zykrave.anirumy.feature.gallery.data.repository.GalleryRepository
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.plugin.module.dsl.single
@@ -40,4 +42,6 @@ val galleryNetworkModule = module {
     }
 
     single<GalleryRepository>()
+
+    single { GalleryDownloader(get(named("rest")), androidContext()) }
 }

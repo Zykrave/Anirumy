@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.koin.compiler)
@@ -6,12 +8,24 @@ plugins {
 
 val appPackageName: String by rootProject.extra
 
+val versionProps = Properties().also {
+    it.load(project.rootProject.file("version.properties").reader())
+}
+
 android {
     namespace = "$appPackageName.core.domain"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
+    }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    buildTypes.all {
+        buildConfigField("String", "VERSION_NAME", "\"${versionProps.getProperty("name")}\"")
     }
 
     compileOptions {

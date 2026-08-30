@@ -42,6 +42,9 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
@@ -49,6 +52,10 @@ import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zykrave.anirumy.core.base.extensions.firstBlocking
+import com.zykrave.anirumy.core.common.utils.ContextUtils.openActionView
+import com.zykrave.anirumy.core.domain.UpdateCheckResult
+import com.zykrave.anirumy.core.domain.UpdateChecker
+import com.zykrave.anirumy.core.domain.repository.DefaultPreferencesRepository
 import com.zykrave.anirumy.core.model.DeepLink
 import com.zykrave.anirumy.core.model.HomeTab
 import com.zykrave.anirumy.core.model.Theme
@@ -66,10 +73,14 @@ import com.zykrave.anirumy.core.ui.common.navigation.Navigator
 import com.zykrave.anirumy.core.ui.common.navigation.rememberNavigationState
 import com.zykrave.anirumy.core.ui.theme.AniHyouTheme
 import com.zykrave.anirumy.core.ui.composables.SakuraPetalsOverlay
+import com.zykrave.anirumy.core.ui.composables.common.UpdateDialog
 import com.zykrave.anirumy.ui.screens.main.composables.MainBottomNavBar
 import com.zykrave.anirumy.ui.screens.main.composables.MainNavigationRail
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.compose.koinInject
+import androidx.compose.runtime.rememberCoroutineScope
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 class MainActivity : AppCompatActivity() {
@@ -248,6 +259,40 @@ fun MainView(
     }
     val navActionManager = remember { NavActionManager(navigator) }
     val isCompactScreen = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
+
+    val updateChecker = koinInject<UpdateChecker>()
+    val preferencesRepository = koinInject<DefaultPreferencesRepository>()
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var updateResult by remember { mutableStateOf<UpdateCheckResult>(UpdateCheckResult.NoUpdate) }
+
+    LaunchedEffect(Unit) {
+        updateResult = updateChecker.check()
+    }
+
+    if (updateResult is UpdateCheckResult.UpdateAvailable) {
+        val release = (updateResult as UpdateCheckResult.UpdateAvailable).release
+        UpdateDialog(
+            releaseName = release.name ?: release.tag_name,
+            releaseBody = release.body,
+            onUpdateClick = {
+                context.openActionView(release.html_url)
+                updateResult = UpdateCheckResult.NoUpdate
+            },
+            onRemindLaterClick = {
+                scope.launch {
+                    preferencesRepository.setDismissedUpdate(
+                        release.tag_name,
+                        System.currentTimeMillis() + (30L * 24 * 60 * 60 * 1000)
+                    )
+                    updateResult = UpdateCheckResult.NoUpdate
+                }
+            },
+            onDismiss = {
+                updateResult = UpdateCheckResult.NoUpdate
+            }
+        )
+    }
 
     LaunchedEffect(isBottomDestination) {
         setNavigationBarContrastEnforced(!isBottomDestination)

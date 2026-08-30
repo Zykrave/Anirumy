@@ -671,4 +671,6 @@
     <string name="score_steps">Score steps</string>
     <string name="maintainer">Maintainer</string>
     <string name="original_contributors">Original AniHyou contributors</string>
+    <string name="update" translatable="false">Update</string>
+    <string name="remind_me_later" translatable="false">Remind me later</string>
 </resources>

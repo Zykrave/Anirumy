@@ -36,4 +36,6 @@ val repositoryModule = module {
     single<StudioRepository>()
     single<ThreadRepository>()
     single<UserRepository>()
+
+    single { UpdateChecker(get(), get(), BuildConfig.VERSION_NAME) }
 }
