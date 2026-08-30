@@ -1,1 +1,1 @@
-AniHyou - Cliente de AniList
+Anirumy - Cliente de AniList
