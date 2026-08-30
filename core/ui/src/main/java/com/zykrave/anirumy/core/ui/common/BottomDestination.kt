@@ -56,6 +56,14 @@ sealed class BottomDestination(
         iconSelected = R.drawable.explore_filled_24
     )
 
+    data object Gallery : BottomDestination(
+        index = 5,
+        route = Route.Gallery,
+        title = R.string.gallery,
+        icon = R.drawable.nekoicon,
+        iconSelected = R.drawable.nekoicon
+    )
+
     @Composable
     fun Icon(selected: Boolean) {
         androidx.compose.material3.Icon(
@@ -67,7 +75,7 @@ sealed class BottomDestination(
     companion object {
         val routes = setOf(Home.route, AnimeList.route, MangaList.route, Profile.route, Explore.route)
 
-        val values = listOf(Home, AnimeList, MangaList, Explore, Profile)
+        val values = listOf(Home, AnimeList, MangaList, Explore, Gallery, Profile)
 
         val railValues = listOf(Home, AnimeList, MangaList, Profile)
 
@@ -82,6 +90,7 @@ sealed class BottomDestination(
                 is MangaList -> "MangaListTab"
                 is Profile -> "ProfileTab"
                 is Explore -> "ExploreTab"
+                is Gallery -> "GalleryTab"
             }
     }
 }
