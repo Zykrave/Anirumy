@@ -85,13 +85,6 @@ fun GalleryScreen() {
 
                 Box(modifier = Modifier.fillMaxSize()) {
                     when {
-                        uiState.error != null -> {
-                            Text(
-                                text = "ERROR: ${uiState.error}",
-                                modifier = Modifier.align(Alignment.Center).padding(24.dp),
-                                color = MaterialTheme.colorScheme.error
-                            )
-                        }
                         uiState.isLoading -> {
                             LoadingIndicator(
                                 modifier = Modifier
@@ -101,8 +94,13 @@ fun GalleryScreen() {
                         }
                         uiState.images.isEmpty() -> {
                             Text(
-                                text = "No images yet",
+                                text = if (uiState.source == GallerySource.COMING_SOON) {
+                                    "Coming soon... the developer is lazy \uD83D\uDE05"
+                                } else {
+                                    "No images yet"
+                                },
                                 modifier = Modifier.align(Alignment.Center),
+                                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }

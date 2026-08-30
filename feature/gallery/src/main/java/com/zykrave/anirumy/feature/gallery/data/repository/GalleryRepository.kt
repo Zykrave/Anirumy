@@ -6,7 +6,7 @@ import com.zykrave.anirumy.feature.gallery.data.remote.WaifuImApi
 enum class GallerySource {
     NEKOS_BEST,
     WAIFU_IM,
-    WAIFU_PICS,
+    COMING_SOON,
 }
 
 data class GalleryImage(
@@ -44,8 +44,9 @@ class GalleryRepository(
                     )
                 }
             }
-            GallerySource.WAIFU_PICS -> {
-                // Not yet implemented — added in a later step.
+            GallerySource.COMING_SOON -> {
+                // Intentionally empty — this source is a placeholder.
+                // See GalleryScreen.kt for the UI message shown for this state.
                 emptyList()
             }
         }
