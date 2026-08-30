@@ -23,4 +23,6 @@ val galleryNetworkModule = module {
             .build()
             .create()
     }
+
+    single<GalleryRepository>()
 }
