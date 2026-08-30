@@ -11,6 +11,7 @@ import com.zykrave.anirumy.core.network.cache.Cache.cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.plugin.module.dsl.single
 
@@ -19,6 +20,7 @@ val networkModule = module {
     single { provideAuthorizationInterceptor(get()) }
     single { provideApolloClient(get()) }
     single { provideOkHttpClient() }
+    single(named("rest")) { provideRestOkHttpClient() }
 }
 
 private fun provideApolloClient(
@@ -72,5 +74,22 @@ fun provideOkHttpClient(): OkHttpClient {
                     .build()
             )
         }
+        .build()
+}
+
+class UserAgentInterceptor(
+    private val userAgent: String,
+) : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val request = chain.request().newBuilder()
+            .header("User-Agent", userAgent)
+            .build()
+        return chain.proceed(request)
+    }
+}
+
+fun provideRestOkHttpClient(): OkHttpClient {
+    return OkHttpClient.Builder()
+        .addInterceptor(UserAgentInterceptor("Anirumy (https://github.com/Zykrave/Anirumy)"))
         .build()
 }
