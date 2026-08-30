@@ -170,6 +170,7 @@ dependencies {
     implementation(project(":feature:characterdetails"))
     implementation(project(":feature:editmedia"))
     implementation(project(":feature:explore"))
+    implementation(project(":feature:gallery"))
     implementation(project(":feature:home"))
     implementation(project(":feature:login"))
     implementation(project(":feature:mediadetails"))

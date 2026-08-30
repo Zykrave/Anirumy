@@ -45,6 +45,7 @@ import com.zykrave.anirumy.feature.explore.charts.MediaChartListView
 import com.zykrave.anirumy.feature.explore.discover.DiscoverView
 import com.zykrave.anirumy.feature.explore.search.SearchView
 import com.zykrave.anirumy.feature.explore.season.SeasonAnimeView
+import com.zykrave.anirumy.feature.gallery.GalleryScreen
 import com.zykrave.anirumy.feature.home.HomeView
 import com.zykrave.anirumy.feature.home.current.fulllist.CurrentFullListView
 import com.zykrave.anirumy.feature.login.LoginView
@@ -224,6 +225,12 @@ fun MainNavigation(
                 isLoggedIn = isLoggedIn,
                 contentPadding = if (isCompactScreen) PaddingValues(bottom = bottomPadding) else PaddingValues(),
             )
+        }
+
+        entry<Route.Gallery>(
+            metadata = topNavigationTransitionSpec
+        ) {
+            GalleryScreen()
         }
 
         entry<Route.UserDetails> {
