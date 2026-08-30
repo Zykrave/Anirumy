@@ -39,10 +39,10 @@ import com.zykrave.anirumy.core.ui.composables.DefaultScaffoldWithSmallTopAppBar
 import com.zykrave.anirumy.core.ui.composables.common.FilterSelectionChip
 import com.zykrave.anirumy.feature.gallery.data.repository.GalleryImage
 import com.zykrave.anirumy.feature.gallery.data.repository.GallerySource
+import com.zykrave.anirumy.feature.gallery.data.repository.categories
 import org.koin.compose.viewmodel.koinViewModel
 
 private val gallerySources = GallerySource.entries
-private val placeholderCategories = listOf("waifu", "neko", "kitsune", "husbando")
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -70,16 +70,19 @@ fun GalleryScreen() {
                     }
                 }
 
-                LazyRow(
-                    modifier = Modifier.padding(vertical = 12.dp, horizontal = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(placeholderCategories) { category ->
-                        FilterSelectionChip(
-                            selected = uiState.category == category,
-                            text = category,
-                            onClick = { viewModel.onCategorySelected(category) }
-                        )
+                val currentCategories = uiState.source.categories()
+                if (currentCategories.isNotEmpty()) {
+                    LazyRow(
+                        modifier = Modifier.padding(vertical = 12.dp, horizontal = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(currentCategories) { category ->
+                            FilterSelectionChip(
+                                selected = uiState.category == category,
+                                text = category,
+                                onClick = { viewModel.onCategorySelected(category) }
+                            )
+                        }
                     }
                 }
 

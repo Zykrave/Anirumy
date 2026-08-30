@@ -9,6 +9,12 @@ enum class GallerySource {
     COMING_SOON,
 }
 
+fun GallerySource.categories(): List<String> = when (this) {
+    GallerySource.NEKOS_BEST -> listOf("waifu", "neko", "kitsune", "husbando")
+    GallerySource.WAIFU_IM -> listOf("waifu", "maid")
+    GallerySource.COMING_SOON -> emptyList()
+}
+
 data class GalleryImage(
     val url: String,
     val width: Int,

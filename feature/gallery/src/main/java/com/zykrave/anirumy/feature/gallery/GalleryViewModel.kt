@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.zykrave.anirumy.core.common.viewmodel.UiStateViewModel
 import com.zykrave.anirumy.feature.gallery.data.repository.GalleryRepository
 import com.zykrave.anirumy.feature.gallery.data.repository.GallerySource
+import com.zykrave.anirumy.feature.gallery.data.repository.categories
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -19,8 +20,9 @@ class GalleryViewModel(
     }
 
     fun onSourceSelected(source: GallerySource) {
-        mutableUiState.update { it.copy(source = source) }
-        fetchImages(source, mutableUiState.value.category)
+        val newCategory = source.categories().firstOrNull() ?: ""
+        mutableUiState.update { it.copy(source = source, category = newCategory) }
+        fetchImages(source, newCategory)
     }
 
     fun onCategorySelected(category: String) {
