@@ -3,6 +3,7 @@
     <string name="anime">Anime</string>
     <string name="manga">Manga</string>
     <string name="explore">Explore</string>
+    <string name="gallery">Gallery</string>
     <plurals name="num_years">
         <item quantity="one">%d year</item>
         <item quantity="other">%d years</item>
