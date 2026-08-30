@@ -24,6 +24,9 @@ dependencies {
     implementation(libs.apollo.normalized.cache)
     api(libs.apollo.api)
 
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.converter.kotlinx.serialization)
+
     implementation(libs.kotlinx.serialization.json)
 
     implementation(platform(libs.koin.bom))
