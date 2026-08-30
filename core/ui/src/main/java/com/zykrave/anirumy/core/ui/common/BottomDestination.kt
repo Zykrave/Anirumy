@@ -2,9 +2,11 @@ package com.zykrave.anirumy.core.ui.common
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavKey
 import com.zykrave.anirumy.core.resources.R
 import com.zykrave.anirumy.core.ui.common.navigation.Route
@@ -68,12 +70,13 @@ sealed class BottomDestination(
     fun Icon(selected: Boolean) {
         androidx.compose.material3.Icon(
             painter = painterResource(if (selected) iconSelected else icon),
-            contentDescription = stringResource(title)
+            contentDescription = stringResource(title),
+            modifier = androidx.compose.ui.Modifier.size(24.dp)
         )
     }
 
     companion object {
-        val routes = setOf(Home.route, AnimeList.route, MangaList.route, Profile.route, Explore.route)
+        val routes = setOf(Home.route, AnimeList.route, MangaList.route, Profile.route, Explore.route, Gallery.route)
 
         val values = listOf(Home, AnimeList, MangaList, Explore, Gallery, Profile)
 
