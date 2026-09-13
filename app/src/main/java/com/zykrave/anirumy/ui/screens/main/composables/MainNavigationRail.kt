@@ -43,12 +43,12 @@ fun MainNavigationRail(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Bottom
         ) {
-            BottomDestination.railValues.forEachIndexed { index, dest ->
+            BottomDestination.railValues.forEach { dest ->
                 val isSelected = navigator.state.topLevelRoute == dest.route
                 NavigationRailItem(
                     selected = isSelected,
                     onClick = {
-                        onItemSelected(index)
+                        onItemSelected(dest.index)
                         navigator.navigate(dest.route)
                     },
                     icon = { dest.Icon(selected = isSelected) },

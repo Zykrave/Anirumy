@@ -80,7 +80,7 @@ sealed class BottomDestination(
 
         val values = listOf(Home, AnimeList, MangaList, Explore, Gallery, Profile)
 
-        val railValues = listOf(Home, AnimeList, MangaList, Profile)
+        val railValues = listOf(Home, AnimeList, MangaList, Profile, Gallery)
 
         fun Int.toBottomDestinationRoute(): Route? = values.find { it.index == this }?.route
 

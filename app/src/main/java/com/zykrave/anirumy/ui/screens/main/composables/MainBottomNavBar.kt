@@ -122,9 +122,19 @@ fun MainBottomNavBar(
             ) {
                 BottomDestination.values.forEachIndexed { index, dest ->
                     val isSelected = dest.route == currentTopRoute
+                    val iconOffsetY by animateDpAsState(
+                        targetValue = if (isSelected) (-4).dp else 0.dp,
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioMediumBouncy,
+                            stiffness = Spring.StiffnessLow
+                        ),
+                        label = "nav_icon_offset"
+                    )
                     NavigationBarItem(
                         icon = {
-                            dest.Icon(selected = isSelected)
+                            Box(modifier = Modifier.offset(y = iconOffsetY)) {
+                                dest.Icon(selected = isSelected)
+                            }
                         },
                         modifier = Modifier
                             .onGloballyPositioned { coordinates ->

@@ -12,7 +12,8 @@ enum class DefaultTab : Localizable {
     ANIME,
     MANGA,
     PROFILE,
-    EXPLORE;
+    EXPLORE,
+    GALLERY;
 
     @get:StringRes
     val stringRes: Int
@@ -23,6 +24,7 @@ enum class DefaultTab : Localizable {
             MANGA -> R.string.manga
             PROFILE -> R.string.profile
             EXPLORE -> R.string.explore
+            GALLERY -> R.string.gallery
         }
 
     @Composable

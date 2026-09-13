@@ -5,8 +5,11 @@ import android.Manifest
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -134,14 +137,20 @@ private fun SettingsContent(
         ) {
             PreferencesTitle(text = stringResource(R.string.display))
 
-            Row(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Max)
+            ) {
                 ListPreference(
                     title = stringResource(R.string.theme),
                     entriesValues = Theme.entriesLocalized,
                     preferenceValue = uiState.theme,
                     icon = R.drawable.palette_24,
                     onValueChange = { event?.setTheme(it) },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
                 )
 
                 ListPreference(
@@ -150,25 +159,41 @@ private fun SettingsContent(
                     preferenceValue = uiState.appColorMode,
                     icon = R.drawable.colors_24,
                     onValueChange = { event?.setAppColorMode(it) },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
                 )
             }
 
-            Row(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Max)
+            ) {
                 ListPreference(
                     title = stringResource(R.string.color_palette),
                     values = PaletteStyle.entries.map { it.name },
                     preferenceValue = uiState.colorPaletteStyle,
                     icon = R.drawable.format_paint_24,
                     onValueChange = { event?.setColorPalette(it) },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
                 )
 
-                LanguagePreference(modifier = Modifier.weight(1f))
+                LanguagePreference(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                )
             }
 
             if (uiState.isLoggedIn) {
-                Row(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(IntrinsicSize.Max)
+                ) {
                     ListPreference(
                         title = stringResource(R.string.title_language),
                         entriesValues = UserTitleLanguage.entriesLocalized,
@@ -178,7 +203,9 @@ private fun SettingsContent(
                             event?.setTitleLanguage(value)
                             snackbarManager.showMessage(R.string.changes_will_take_effect_on_app_restart)
                         },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
                     )
 
                     ListPreference(
@@ -187,7 +214,9 @@ private fun SettingsContent(
                         preferenceValue = uiState.scoreFormat,
                         icon = R.drawable.star_24,
                         onValueChange = { event?.setScoreFormat(it) },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
                     )
                 }
             }

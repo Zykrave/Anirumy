@@ -17,18 +17,21 @@ import org.koin.plugin.module.dsl.single
 
 val networkModule = module {
     single<NetworkVariables>()
+    single { RateLimitInterceptor() }
     single { provideAuthorizationInterceptor(get()) }
-    single { provideApolloClient(get()) }
+    single { provideApolloClient(get(), get()) }
     single { provideOkHttpClient() }
     single(named("rest")) { provideRestOkHttpClient() }
 }
 
 private fun provideApolloClient(
-    authorizationInterceptor: AuthorizationInterceptor
+    authorizationInterceptor: AuthorizationInterceptor,
+    rateLimitInterceptor: RateLimitInterceptor,
 ): ApolloClient {
     val cacheFactory = MemoryCacheFactory(maxSizeBytes = 10 * 1024 * 1024)
 
     val okHttpClient = OkHttpClient.Builder()
+        .addInterceptor(rateLimitInterceptor)
         .addInterceptor(authorizationInterceptor)
         .build()
 
