@@ -9,6 +9,16 @@
 </p>
 
 <p align="center">
+  <a href="https://rookieenough.github.io/Orion-Data/app/?id=anirumy">
+    <img src="https://raw.githubusercontent.com/RookieEnough/Orion-Store/main/icon.png" width="72" height="72" alt="Orion Store logo">
+    <br>
+    <strong>GET IT ON ORION STORE</strong>
+    <br>
+    <sub>Download Anirumy</sub>
+  </a>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Platform-Android-3DDC84?style=flat&logo=android&logoColor=white" alt="Platform">
   <img src="https://img.shields.io/badge/Kotlin-7F52FF?style=flat&logo=kotlin&logoColor=white" alt="Kotlin">
   <img src="https://img.shields.io/badge/License-GPLv3-blue?style=flat" alt="License">
@@ -62,10 +72,6 @@ Anirumy is an **unofficial third-party client for [AniList](https://anilist.co)*
 </table>
 
 ## 📥 Installation
-
-### Orion Store
-
-Download **Anirumy** from the [Orion Store](https://rookieenough.github.io/Orion-Data/app/?id=anirumy).
 
 ### 1. Download the APK
 
