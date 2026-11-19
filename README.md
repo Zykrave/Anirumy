@@ -25,9 +25,13 @@
 <p align="center">
   <a href="https://rookieenough.github.io/Orion-Data/app/?id=anirumy">
     <img src="https://img.shields.io/badge/GET_IT_ON-Orion_Store-5267D8?style=for-the-badge" alt="Get Anirumy on Orion Store">
-    <br>
-    <sub>Download Anirumy from Orion Store</sub>
   </a>
+  &nbsp;&nbsp;
+  <a href="https://github.com/Zykrave/Anirumy/releases">
+    <img src="https://img.shields.io/badge/DOWNLOAD-GitHub_Releases-181717?style=for-the-badge&logo=github" alt="Download Anirumy from GitHub Releases">
+  </a>
+  <br>
+  <sub>Choose Orion Store or download the APK from GitHub Releases</sub>
 </p>
 
 ---
