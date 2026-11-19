@@ -63,6 +63,10 @@ Anirumy is an **unofficial third-party client for [AniList](https://anilist.co)*
 
 ## 📥 Installation
 
+### Orion Store
+
+Download **Anirumy** from the [Orion Store](https://rookieenough.github.io/Orion-Data/app/?id=anirumy).
+
 ### 1. Download the APK
 
 Grab the latest `app-foss-release.apk` from the [Releases](../../releases) page.
@@ -79,7 +83,7 @@ Since Anirumy isn't distributed through the Play Store, your phone will ask for 
 
 You will very likely see a screen from **Google Play Protect** during installation that says something like:
 
-> *"Unsafe app blocked"* or *"App isn't verified"* or *"This app wasn't scanned for harmful behavior"*
+> *"Unsafe app blocked" or "App isn't verified" or "This app wasn't scanned for harmful behavior"*
 
 **This is expected and normal.** It happens for every app distributed outside the Play Store, regardless of how safe or well-built it is — it is not specific to Anirumy. Google Play Protect flags any APK it hasn't independently reviewed through its Play Store pipeline.
 
